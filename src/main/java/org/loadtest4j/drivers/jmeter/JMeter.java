@@ -97,35 +97,50 @@ class JMeter implements Driver {
     }
 
     private HashTree createHashTree(List<DriverRequest> driverRequests) {
-        // FIXME loop over requests, not just the first one
-        final HTTPSampler httpSampler = createHttpSampler(protocol, domain, port, driverRequests.get(0));
+        // FIXME put back driver requests code
+        // FIXME tell jmeter to write xml not csv
 
-        final LoopController loopCtrl = new LoopController();
-        loopCtrl.setName("Loadtest4j Loop Controller");
-        loopCtrl.setLoops(1);
-        loopCtrl.addTestElement(httpSampler);
-        loopCtrl.setFirst(true);
-        loopCtrl.setProperty(TestElement.TEST_CLASS, LoopController.class.getName());
-        loopCtrl.setProperty(TestElement.GUI_CLASS, LoopControlPanel.class.getName());
-        loopCtrl.initialize();
+        // HTTP Sampler
+        HTTPSampler httpSampler = new HTTPSampler();
+        httpSampler.setName("GET google.com");
+        httpSampler.setProtocol("https");
+        httpSampler.setDomain("google.com");
+        httpSampler.setPort(443);
+        httpSampler.setPath("/");
+        httpSampler.setMethod("GET");
+        httpSampler.setProperty(TestElement.TEST_CLASS, HTTPSampler.class.getName());
+        httpSampler.setProperty(TestElement.GUI_CLASS, HttpTestSampleGui.class.getName());
 
-        final ThreadGroup threadGroup = new ThreadGroup();
+        // Loop Controller
+        LoopController loopController = new LoopController();
+        loopController.setName("Loadtest4j Loop Controller");
+        loopController.setLoops(1);
+        loopController.addTestElement(httpSampler);
+        loopController.setFirst(true);
+        loopController.initialize();
+        loopController.setProperty(TestElement.TEST_CLASS, LoopController.class.getName());
+        loopController.setProperty(TestElement.GUI_CLASS, LoopControlPanel.class.getName());
+
+        // Thread Group
+        ThreadGroup threadGroup = new ThreadGroup();
         threadGroup.setName("Loadtest4j Thread Group");
         threadGroup.setNumThreads(1);
         threadGroup.setRampUp(1);
-        threadGroup.setSamplerController(loopCtrl);
+        threadGroup.setSamplerController(loopController);
         threadGroup.setProperty(TestElement.TEST_CLASS, ThreadGroup.class.getName());
         threadGroup.setProperty(TestElement.GUI_CLASS, ThreadGroupGui.class.getName());
 
-        final TestPlan testPlan = new TestPlan("Loadtest4j Test Plan");
+        // Test Plan
+        TestPlan testPlan = new TestPlan("Create JMeter Script From Java Code");
         testPlan.setProperty(TestElement.TEST_CLASS, TestPlan.class.getName());
         testPlan.setProperty(TestElement.GUI_CLASS, TestPlanGui.class.getName());
 
-        final HashTree testPlanTree = new HashTree();
-        testPlanTree.add("testPlan", testPlan);
-        testPlanTree.add("loopController", loopCtrl);
-        testPlanTree.add("threadGroup", threadGroup);
-        testPlanTree.add("httpSampler", httpSampler);
+        // Construct Test Plan from previously initialized elements
+        HashTree testPlanTree = new HashTree();
+        testPlanTree.add(testPlan);
+        testPlanTree.add(loopController);
+        testPlanTree.add(threadGroup);
+        testPlanTree.add(httpSampler);
 
         return testPlanTree;
     }
@@ -136,39 +151,6 @@ class JMeter implements Driver {
         } catch (IOException e) {
             throw new LoadTesterException(e);
         }
-    }
-
-    private static HTTPSampler createHttpSampler(String protocol, String domain, int port, DriverRequest driverRequest) {
-        final HTTPSampler httpSampler = new HTTPSampler();
-        httpSampler.setName(driverRequest.getMethod() + " " + protocol + "://" + domain + driverRequest.getPath());
-        httpSampler.setProtocol(protocol);
-        httpSampler.setDomain(domain);
-        httpSampler.setPort(port);
-//        httpSampler.setArguments(createArguments(driverRequest.getQueryParams()));
-//        httpSampler.setHeaderManager(createHeaderManager(driverRequest.getHeaders()));
-        httpSampler.setMethod(driverRequest.getMethod());
-        httpSampler.setPath(driverRequest.getPath());
-//  FIXME add request body (this code does not work)   httpSampler.addNonEncodedArgument("", driverRequest.getBody(), "");
-        httpSampler.setProperty(TestElement.TEST_CLASS, HTTPSampler.class.getName());
-        httpSampler.setProperty(TestElement.GUI_CLASS, HttpTestSampleGui.class.getName());
-
-        return httpSampler;
-    }
-
-    private static Arguments createArguments(Map<String, String> queryParams) {
-        final Arguments arguments = new Arguments();
-
-        queryParams.forEach(arguments::addArgument);
-
-        return arguments;
-    }
-
-    private static HeaderManager createHeaderManager(Map<String, String> headers) {
-        final HeaderManager headerManager = new HeaderManager();
-
-        headers.forEach((key, value) -> headerManager.add(new Header(key, value)));
-
-        return headerManager;
     }
 
     private static <T> void validateNotEmpty(Collection<T> requests) {

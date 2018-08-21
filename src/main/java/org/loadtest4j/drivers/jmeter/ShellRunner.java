@@ -6,6 +6,8 @@ import org.loadtest4j.drivers.jmeter.util.Process;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 class ShellRunner implements Runner {
@@ -22,13 +24,13 @@ class ShellRunner implements Runner {
 
     @Override
     public File runJmeter(File jmxFile) {
-
-        final File resultFile = createTempFile("loadtest4j", ".jtl");
+        final Path runDirectory = createTempDirectory("loadtest4j");
+        final Path resultFile = runDirectory.resolve("result.jtl");
 
         final List<String> arguments = new ArgumentBuilder()
                 .addArgument("-n")
                 .addNamedArgument("-t", jmxFile.getAbsolutePath())
-                .addNamedArgument("-l", resultFile.getAbsolutePath())
+                .addNamedArgument("-l", resultFile.toString())
                 .build();
 
         final Command command = new Command(arguments, executable);
@@ -40,12 +42,12 @@ class ShellRunner implements Runner {
         final String output = StreamReader.streamToString(process.getStdout());
         System.out.println(output);
 
-        return resultFile;
+        return resultFile.toFile();
     }
 
-    private static File createTempFile(String prefix, String suffix) {
+    private static Path createTempDirectory(String prefix) {
         try {
-            return File.createTempFile(prefix, suffix);
+            return Files.createTempDirectory(prefix);
         } catch (IOException e) {
             throw new LoadTesterException(e);
         }
