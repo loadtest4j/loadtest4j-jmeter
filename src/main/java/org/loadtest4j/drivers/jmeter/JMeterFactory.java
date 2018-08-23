@@ -12,18 +12,22 @@ import java.util.Set;
 public class JMeterFactory implements DriverFactory {
     @Override
     public Set<String> getMandatoryProperties() {
-        return setOf("domain", "port", "protocol");
+        return setOf("domain", "numThreads", "port", "protocol", "rampUp");
     }
 
     @Override
     public Driver create(Map<String, String> properties) {
         final String domain = properties.get("domain");
 
+        final int numThreads = Integer.valueOf(properties.get("numThreads"));
+
         final int port = Integer.valueOf(properties.get("port"));
 
         final String protocol = properties.get("protocol");
 
-        return new JMeter(domain, port, protocol);
+        final int rampUp = Integer.valueOf(properties.get("rampUp"));
+
+        return new JMeter(domain, numThreads, port, protocol, rampUp);
     }
 
     private static Set<String> setOf(String... values) {

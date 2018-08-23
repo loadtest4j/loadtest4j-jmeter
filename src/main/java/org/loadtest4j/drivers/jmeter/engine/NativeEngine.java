@@ -1,4 +1,4 @@
-package org.loadtest4j.drivers.jmeter;
+package org.loadtest4j.drivers.jmeter.engine;
 
 import org.apache.jmeter.engine.StandardJMeterEngine;
 import org.apache.jmeter.reporters.ResultCollector;
@@ -9,10 +9,10 @@ import org.loadtest4j.LoadTesterException;
 import java.io.File;
 import java.io.IOException;
 
-class NativeRunner implements Runner {
+class NativeEngine implements Engine {
     @Override
-    public File runJmeter(File jmxFile) {
-        final HashTree hashTree = loadConfig(jmxFile);
+    public File runJmeter(File testPlan) {
+        final HashTree hashTree = loadTestPlan(testPlan);
 
         final File resultFile = createTempFile("loadtest4j", ".jtl");
 
@@ -28,15 +28,16 @@ class NativeRunner implements Runner {
 
     }
 
-    private static HashTree loadConfig(File jmxFile) {
+    private static HashTree loadTestPlan(File testPlan) {
         try {
-            return  SaveService.loadTree(jmxFile);
+            return  SaveService.loadTree(testPlan);
         } catch (IOException e) {
             throw new LoadTesterException(e);
         }
     }
 
     private static void addResultCollector(HashTree hashTree, File resultFile) {
+        // FIXME this mutating operation is a bit nasty
         final ResultCollector resultCollector = createResultCollector(resultFile);
 
         hashTree.add(hashTree.getArray()[0], resultCollector);

@@ -12,10 +12,6 @@ public class Process {
         this.process = process;
     }
 
-    public InputStream getStderr() {
-        return process.getErrorStream();
-    }
-
     public InputStream getStdout() {
         return process.getInputStream();
     }
