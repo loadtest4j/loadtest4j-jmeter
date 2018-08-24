@@ -8,10 +8,21 @@ import org.loadtest4j.LoadTesterException;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class NativeEngine implements Engine {
+
+    private final Path resultsDirectory;
+
+    public NativeEngine(Path resultsDirectory) {
+        this.resultsDirectory = resultsDirectory;
+    }
+
+    public static NativeEngine standard() {
+        final Path resultsDirectory = new File(System.getProperty("user.dir")).toPath().resolve("results");
+        return new NativeEngine(resultsDirectory);
+    }
+
     @Override
     public File runJmeter(File testPlan) {
         final HashTree hashTree = loadTestPlan(testPlan);
@@ -38,6 +49,14 @@ public class NativeEngine implements Engine {
         }
     }
 
+    private Path newResultFile() {
+        final String timestamp = String.valueOf(System.currentTimeMillis());
+
+        return this.resultsDirectory
+                .resolve("loadtest4j-" + timestamp)
+                .resolve("result.jtl");
+    }
+
     private static void addResultCollector(HashTree hashTree, Path resultFile) {
         final ResultCollector resultCollector = createResultCollector(resultFile);
 
@@ -49,15 +68,5 @@ public class NativeEngine implements Engine {
         resultCollector.setFilename(resultFile.toFile().getAbsolutePath());
 
         return resultCollector;
-    }
-
-    private static Path newResultFile() {
-        final Path runDirectory;
-        try {
-            runDirectory = Files.createTempDirectory("loadtest4j");
-        } catch (IOException e) {
-            throw new LoadTesterException(e);
-        }
-        return runDirectory.resolve("result.jtl");
     }
 }

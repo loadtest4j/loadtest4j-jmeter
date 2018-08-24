@@ -77,8 +77,8 @@ class JMeter implements Driver {
         return testPlan.create(driverRequests);
     }
 
-    private static File runJmeter(File testPlan) {
-        final Engine engine = new NativeEngine();
+    private File runJmeter(File testPlan) {
+        final Engine engine = NativeEngine.standard();
         return engine.runJmeter(testPlan);
     }
 
