@@ -8,6 +8,7 @@ import org.loadtest4j.LoadTesterException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class NativeEngine implements Engine {
@@ -52,9 +53,15 @@ public class NativeEngine implements Engine {
     private Path newResultFile() {
         final String timestamp = String.valueOf(System.currentTimeMillis());
 
-        return this.resultsDirectory
+        final Path proposedPath = this.resultsDirectory
                 .resolve("loadtest4j-" + timestamp)
                 .resolve("result.jtl");
+
+        if (Files.exists(proposedPath)) {
+            throw new LoadTesterException("JMeter result file already exists.");
+        }
+
+        return proposedPath;
     }
 
     private static void addResultCollector(HashTree hashTree, Path resultFile) {
