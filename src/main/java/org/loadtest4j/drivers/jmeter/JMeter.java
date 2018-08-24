@@ -6,7 +6,7 @@ import org.loadtest4j.driver.Driver;
 import org.loadtest4j.driver.DriverRequest;
 import org.loadtest4j.driver.DriverResult;
 import org.loadtest4j.drivers.jmeter.engine.Engine;
-import org.loadtest4j.drivers.jmeter.engine.ShellEngine;
+import org.loadtest4j.drivers.jmeter.engine.NativeEngine;
 import org.loadtest4j.drivers.jmeter.parser.Parser;
 import org.loadtest4j.drivers.jmeter.util.Resources;
 
@@ -78,7 +78,7 @@ class JMeter implements Driver {
     }
 
     private static File runJmeter(File testPlan) {
-        final Engine engine = new ShellEngine("jmeter");
+        final Engine engine = new NativeEngine();
         return engine.runJmeter(testPlan);
     }
 

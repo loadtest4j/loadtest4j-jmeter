@@ -1,7 +1,6 @@
 package org.loadtest4j.drivers.jmeter;
 
 import com.xebialabs.restito.server.StubServer;
-
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
@@ -23,12 +22,7 @@ import java.util.logging.Logger;
 
 import static com.xebialabs.restito.builder.stub.StubHttp.whenHttp;
 import static com.xebialabs.restito.semantics.Action.status;
-import static com.xebialabs.restito.semantics.Condition.get;
-import static com.xebialabs.restito.semantics.Condition.parameter;
-import static com.xebialabs.restito.semantics.Condition.post;
-import static com.xebialabs.restito.semantics.Condition.withHeader;
-import static com.xebialabs.restito.semantics.Condition.withPostBodyContaining;
-import static org.junit.Assert.fail;
+import static com.xebialabs.restito.semantics.Condition.*;
 
 public class JMeterTest {
 
@@ -55,7 +49,7 @@ public class JMeterTest {
     }
 
     private Driver sut() {
-        return new JMeter("localhost", 10, httpServer.getPort(), "http", 10);
+        return new JMeter("localhost", 10, httpServer.getPort(), "http", 2);
     }
 
     @Test
@@ -164,17 +158,16 @@ public class JMeterTest {
 
     @Test
     public void testRunWithBrokenDriver() {
-        fail("TODO implement me");
         // Given
-//        final Driver driver = new JMeter(1, EXPECTED_DURATION, 1, "http://localhost:1");
+        final Driver driver = new JMeter("localhost", 1, 1, "http", 2);
 
         // Expect
-//        thrown.expect(LoadTesterException.class);
-//        thrown.expectMessage("JMeter error");
+        thrown.expect(LoadTesterException.class);
+        thrown.expectMessage("JMeter error");
 
         // When
-//        final List<DriverRequest> requests = Collections.singletonList(DriverRequests.getWithQueryParams("/", Collections.singletonMap("foo", "bar")));
-//        driver.run(requests);
+        final List<DriverRequest> requests = Collections.singletonList(DriverRequests.getWithQueryParams("/", Collections.singletonMap("foo", "bar")));
+        driver.run(requests);
     }
 
 
