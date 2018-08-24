@@ -1,5 +1,6 @@
 package org.loadtest4j.drivers.jmeter.parser;
 
+import org.supercsv.exception.SuperCsvException;
 import org.supercsv.io.CsvMapReader;
 import org.supercsv.io.ICsvMapReader;
 import org.supercsv.prefs.CsvPreference;
@@ -60,7 +61,7 @@ final class CsvStream {
                 final Map<String, String> thing = reader.read(header);
 
                 return Optional.ofNullable(thing);
-            } catch (IOException e) {
+            } catch (IOException | SuperCsvException e) {
                 throw new CsvException(e);
             }
         }

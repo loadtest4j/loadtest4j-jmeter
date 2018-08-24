@@ -7,12 +7,10 @@ import org.loadtest4j.drivers.jmeter.JMeterResult;
 import java.net.URL;
 import java.time.Duration;
 
-import static org.junit.Assert.fail;
-
 public class ParserTest {
 
-    private URL fixture(String name) {
-        return this.getClass().getClassLoader().getResource(name);
+    private static URL fixture(String name) {
+        return ParserTest.class.getClassLoader().getResource(name);
     }
 
     private Parser sut() {
@@ -23,7 +21,7 @@ public class ParserTest {
     public void testParse() {
         final Parser parser = sut();
 
-        final JMeterResult result = parser.parse(fixture("valid.jtl"));
+        final JMeterResult result = parser.parse(fixture("jtl/valid.jtl"));
 
         SoftAssertions.assertSoftly(s -> {
             s.assertThat(result.getActualDuration()).as("Actual Duration").isEqualTo(Duration.ofMillis(8997));
@@ -34,18 +32,11 @@ public class ParserTest {
         });
     }
 
-    @Test(expected = CsvException.class)
-    public void testParseInvalidResult() {
-        final Parser parser = sut();
-
-        parser.parse(fixture("invalid.jtl"));
-    }
-
     @Test
     public void testParseResultWithNoSamples() {
         final Parser parser = sut();
 
-        final JMeterResult result = parser.parse(fixture("empty.jtl"));
+        final JMeterResult result = parser.parse(fixture("jtl/empty.jtl"));
 
         SoftAssertions.assertSoftly(s -> {
             s.assertThat(result.getActualDuration()).as("Actual Duration").isEqualTo(Duration.ZERO);
