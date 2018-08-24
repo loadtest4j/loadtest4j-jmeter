@@ -7,10 +7,13 @@ import org.loadtest4j.driver.DriverRequest;
 import org.loadtest4j.driver.DriverResult;
 import org.loadtest4j.drivers.jmeter.engine.Engine;
 import org.loadtest4j.drivers.jmeter.engine.ShellEngine;
+import org.loadtest4j.drivers.jmeter.parser.Parser;
 import org.loadtest4j.drivers.jmeter.util.Resources;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -75,13 +78,21 @@ class JMeter implements Driver {
     }
 
     private static File runJmeter(File testPlan) {
-        final Engine engine = ShellEngine.standard();
+        final Engine engine = new ShellEngine("jmeter");
         return engine.runJmeter(testPlan);
     }
 
     private static JMeterResult readResult(File resultFile) {
-        final JMeterResultParser resultParser = new JMeterResultParser();
-        return resultParser.parse(resultFile);
+        final Parser parser = new Parser();
+        return parser.parse(toUrl(resultFile));
+    }
+
+    private static URL toUrl(File file) {
+        try {
+            return file.toURI().toURL();
+        } catch (MalformedURLException e) {
+            throw new LoadTesterException(e);
+        }
     }
 
     private static File createTempDirectory(String prefix) {

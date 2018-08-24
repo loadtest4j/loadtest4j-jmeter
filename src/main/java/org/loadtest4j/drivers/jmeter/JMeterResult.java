@@ -6,7 +6,7 @@ import org.loadtest4j.driver.DriverResult;
 import java.time.Duration;
 import java.util.Optional;
 
-class JMeterResult implements DriverResult {
+public class JMeterResult implements DriverResult {
 
     private final Duration actualDuration;
 
@@ -18,7 +18,7 @@ class JMeterResult implements DriverResult {
 
     private final DriverResponseTime responseTime;
 
-    JMeterResult(Duration actualDuration, long ok, long ko, String reportUrl, DriverResponseTime responseTime) {
+    public JMeterResult(Duration actualDuration, long ok, long ko, String reportUrl, DriverResponseTime responseTime) {
         this.actualDuration = actualDuration;
         this.ok = ok;
         this.ko = ko;

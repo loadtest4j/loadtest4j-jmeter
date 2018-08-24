@@ -43,9 +43,9 @@ class JMeterTestPlan {
     File create(List<DriverRequest> driverRequests) {
         final HashTree hashTree = createHashTree(driverRequests);
 
-        // FIXME make this not hardcoded
-        final File jmxFile = new File(System.getProperty("user.dir") + "/example.jmx");
+        final File jmxFile;
         try {
+            jmxFile = File.createTempFile("example", ".jmx");
             final FileOutputStream os = new FileOutputStream(jmxFile);
             SaveService.saveTree(hashTree, os);
         } catch (IOException e) {

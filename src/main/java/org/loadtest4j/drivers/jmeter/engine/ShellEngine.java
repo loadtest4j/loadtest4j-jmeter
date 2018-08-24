@@ -14,12 +14,8 @@ public class ShellEngine implements Engine {
 
     private final String executable;
 
-    private ShellEngine(String executable) {
+    public ShellEngine(String executable) {
         this.executable = executable;
-    }
-
-    public static Engine standard() {
-        return new ShellEngine("jmeter");
     }
 
     @Override

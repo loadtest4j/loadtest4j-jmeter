@@ -37,7 +37,6 @@ class NativeEngine implements Engine {
     }
 
     private static void addResultCollector(HashTree hashTree, File resultFile) {
-        // FIXME this mutating operation is a bit nasty
         final ResultCollector resultCollector = createResultCollector(resultFile);
 
         hashTree.add(hashTree.getArray()[0], resultCollector);
