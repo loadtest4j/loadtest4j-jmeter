@@ -49,7 +49,7 @@ public class JMeterTest {
     }
 
     private Driver sut() {
-        return new JMeter("localhost", 10, httpServer.getPort(), "http", 2);
+        return new JMeter("localhost", 10, httpServer.getPort(), "http", 3);
     }
 
     @Test
