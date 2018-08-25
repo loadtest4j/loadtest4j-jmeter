@@ -7,6 +7,7 @@ import org.loadtest4j.LoadTesterException;
 import org.loadtest4j.driver.DriverRequest;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -46,13 +47,17 @@ public class BlackBoxTestPlanFactory implements TestPlanFactory {
             throw new LoadTesterException(e);
         }
 
-        try (Writer writer = new FileWriter(jmxFile)) {
+        try (Writer writer = createWriter(jmxFile)) {
             mustache.execute(writer, testPlan(driverRequests)).flush();
         } catch (IOException e) {
             throw new LoadTesterException(e);
         }
 
         return jmxFile;
+    }
+
+    private static Writer createWriter(File file) throws FileNotFoundException {
+        return new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
     }
 
     private TestPlan testPlan(List<DriverRequest> driverRequests) {
