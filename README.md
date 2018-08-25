@@ -1,6 +1,8 @@
 # loadtest4j-jmeter
 
 [![Build Status](https://travis-ci.com/loadtest4j/loadtest4j-jmeter.svg?branch=master)](https://travis-ci.com/loadtest4j/loadtest4j-jmeter)
+[![Codecov](https://codecov.io/gh/loadtest4j/loadtest4j-jmeter/branch/master/graph/badge.svg)](https://codecov.io/gh/loadtest4j/loadtest4j-jmeter)
+[![JitPack Release](https://jitpack.io/v/com.github.loadtest4j/loadtest4j-jmeter.svg)](https://jitpack.io/#com.github.loadtest4j/loadtest4j-jmeter)
 
 **EXPERIMENTAL** JMeter driver for loadtest4j.
 
@@ -13,6 +15,7 @@
         <groupId>com.github.loadtest4j</groupId>
         <artifactId>loadtest4j-jmeter</artifactId>
         <version>[version]</version>
+        <scope>test</scope>
     </dependency>   
     ```
      
@@ -30,6 +33,7 @@
     loadtest4j.driver.numThreads = 1
     loadtest4j.driver.port = 443
     loadtest4j.driver.protocol = https
+    loadtest4j.driver.rampUp = 5
     ```
 
 3. **Write your load tests** using the standard [LoadTester API](https://github.com/loadtest4j/loadtest4j).
