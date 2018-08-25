@@ -43,8 +43,8 @@ public class Parser {
     private static CombiResult toCombiResult(Map<String, String> sample) {
         final boolean success = Boolean.valueOf(sample.get("success"));
 
-        final long ok = (success) ? 1 : 0;
-        final long ko = (success) ? 0 : 1;
+        final long ok = success ? 1 : 0;
+        final long ko = success ? 0 : 1;
         final long startTime = Long.valueOf(sample.get("timeStamp"));
         final long endTime = startTime + Long.valueOf(sample.get("elapsed"));
         return new CombiResult(ok, ko, startTime, endTime);
