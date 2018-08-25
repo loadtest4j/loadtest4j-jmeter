@@ -19,13 +19,13 @@ public class JMeterFactory implements DriverFactory {
     public Driver create(Map<String, String> properties) {
         final String domain = properties.get("domain");
 
-        final int numThreads = Integer.valueOf(properties.get("numThreads"));
+        final int numThreads = Integer.parseInt(properties.get("numThreads"));
 
-        final int port = Integer.valueOf(properties.get("port"));
+        final int port = Integer.parseInt(properties.get("port"));
 
         final String protocol = properties.get("protocol");
 
-        final int rampUp = Integer.valueOf(properties.get("rampUp"));
+        final int rampUp = Integer.parseInt(properties.get("rampUp"));
 
         return new JMeter(domain, numThreads, port, protocol, rampUp);
     }
