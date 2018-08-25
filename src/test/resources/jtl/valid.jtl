@@ -1,0 +1,11 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,Latency,IdleTime,Connect
+1535061986219,728,GET /,301,Moved Permanently,Loadtest4j Thread Group 1-1,text,true,,612,109,1,1,725,0,675
+1535061987093,139,GET /,301,Moved Permanently,Loadtest4j Thread Group 1-2,text,true,,612,109,1,1,139,0,115
+1535061988096,117,GET /,301,Moved Permanently,Loadtest4j Thread Group 1-3,text,true,,612,109,1,1,117,0,94
+1535061989092,117,GET /,301,Moved Permanently,Loadtest4j Thread Group 1-4,text,true,,612,109,1,1,116,0,92
+1535061990092,257,GET /,301,Moved Permanently,Loadtest4j Thread Group 1-5,text,true,,612,109,1,1,257,0,217
+1535061991095,116,GET /,301,Moved Permanently,Loadtest4j Thread Group 1-6,text,true,,612,109,1,1,115,0,91
+1535061992111,120,GET /,301,Moved Permanently,Loadtest4j Thread Group 1-7,text,true,,612,109,1,1,119,0,96
+1535061993092,118,GET /,301,Moved Permanently,Loadtest4j Thread Group 1-8,text,true,,612,109,1,1,118,0,95
+1535061994092,109,GET /,301,Moved Permanently,Loadtest4j Thread Group 1-9,text,true,,612,109,1,1,109,0,86
+1535061995100,116,GET /,301,Moved Permanently,Loadtest4j Thread Group 1-10,text,true,,612,109,1,1,115,0,90
