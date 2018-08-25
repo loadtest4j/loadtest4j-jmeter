@@ -6,7 +6,6 @@ import org.apache.jmeter.save.SaveService;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.collections.HashTree;
 import org.loadtest4j.LoadTesterException;
-import org.loadtest4j.drivers.jmeter.util.Resources;
 
 import java.io.File;
 import java.io.IOException;
