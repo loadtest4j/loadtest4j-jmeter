@@ -3,8 +3,10 @@ package org.loadtest4j.drivers.jmeter.engine;
 import org.apache.jmeter.engine.StandardJMeterEngine;
 import org.apache.jmeter.reporters.ResultCollector;
 import org.apache.jmeter.save.SaveService;
+import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.collections.HashTree;
 import org.loadtest4j.LoadTesterException;
+import org.loadtest4j.drivers.jmeter.util.Resources;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +28,8 @@ public class NativeEngine implements Engine {
 
     @Override
     public File runJmeter(File testPlan) {
+        loadJmeterProperties();
+
         final HashTree hashTree = loadTestPlan(testPlan);
 
         final Path resultFile = newResultFile();
@@ -40,6 +44,35 @@ public class NativeEngine implements Engine {
 
         return resultFile.toFile();
 
+    }
+
+    /**
+     * Run this before constructing jmeter API objects because they may read these properties.
+     */
+    private static void loadJmeterProperties() {
+        final File jmeterHome = createTempDirectory("jmeter_home");
+        extractConfigSettings(jmeterHome);
+
+        JMeterUtils.setJMeterHome(jmeterHome.getAbsolutePath());
+
+        final Path jmeterProperties = jmeterHome.toPath().resolve("bin").resolve("jmeter.properties");
+        JMeterUtils.loadJMeterProperties(jmeterProperties.toString());
+    }
+
+    private static File createTempDirectory(String prefix) {
+        try {
+            return Files.createTempDirectory(prefix).toFile();
+        } catch (IOException e) {
+            throw new LoadTesterException(e);
+        }
+    }
+
+    private static void extractConfigSettings(File jmeterHome) {
+        try {
+            Resources.copy("bin", new File(jmeterHome, "bin"));
+        } catch (IOException e) {
+            throw new LoadTesterException(e);
+        }
     }
 
     private static HashTree loadTestPlan(File testPlan) {
