@@ -177,15 +177,15 @@ public class JMeterTest {
         // Given
         final Driver driver = new JMeter("localhost", 1, 1, "http", 2);
 
-        // Expect
-        thrown.expect(LoadTesterException.class);
-        thrown.expectMessage("JMeter error");
-
         // When
         final List<DriverRequest> requests = Collections.singletonList(DriverRequests.getWithQueryParams("/", Collections.singletonMap("foo", "bar")));
-        driver.run(requests);
-    }
+        final DriverResult result = driver.run(requests);
 
+        // Then
+        DriverResultAssert.assertThat(result)
+                .hasOk(0)
+                .hasKoGreaterThan(0);
+    }
 
     @Test
     public void testRunWithNoRequests() {
