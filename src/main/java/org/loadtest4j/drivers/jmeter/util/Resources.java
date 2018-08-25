@@ -46,7 +46,10 @@ public final class Resources {
                     File targetFile = new File(targetPath, filename);
 
                     if (jarEntry.isDirectory()) {
-                        targetFile.mkdirs();
+                        boolean success = targetFile.mkdirs();
+                        if (!success) {
+                            throw new IOException("Mkdir failed for: " + targetFile.getAbsolutePath());
+                        }
                     } else {
                         if (!targetFile.exists() || targetFile.length() != jarEntry.getSize()) {
                             try (InputStream is = jarFile.getInputStream(jarEntry);
