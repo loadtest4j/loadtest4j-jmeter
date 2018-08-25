@@ -143,9 +143,24 @@ public class JMeterTest {
         // Given
         final Driver driver = sut();
         // And
-        whenHttp(httpServer).match(get("/")).then(status(HttpStatus.OK_200));
+        whenHttp(httpServer).match(get("/")).then(status(HttpStatus.NOT_FOUND_404));
+
+        // When
+        final List<DriverRequest> requests = Collections.singletonList(DriverRequests.get("/"));
+        final DriverResult result = driver.run(requests);
+
+        // Then
+        DriverResultAssert.assertThat(result)
+                .hasOk(0)
+                .hasKoGreaterThan(0);
+    }
+
+    @Test
+    public void testRunWithQueryString()  {
+        // Given
+        final Driver driver = sut();
         // And
-        whenHttp(httpServer).match(get("/"), parameter("foo", "bar")).then(status(HttpStatus.NOT_FOUND_404));
+        whenHttp(httpServer).match(get("/"), parameter("foo", "bar")).then(status(HttpStatus.OK_200));
 
         // When
         final List<DriverRequest> requests = Collections.singletonList(DriverRequests.getWithQueryParams("/", Collections.singletonMap("foo", "bar")));
@@ -153,8 +168,8 @@ public class JMeterTest {
 
         // Then
         DriverResultAssert.assertThat(result)
-                .hasOk(0)
-                .hasKoGreaterThan(0);
+                .hasOkGreaterThan(0)
+                .hasKo(0);
     }
 
     @Test
