@@ -8,9 +8,11 @@ import org.loadtest4j.driver.DriverRequest;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Does not have any clue about JMeter's internal data structures, just renders XML externally.
@@ -63,7 +65,7 @@ public class BlackBoxTestPlanFactory implements TestPlanFactory {
     private TestPlan testPlan(List<DriverRequest> driverRequests) {
         final List<TestPlan.HttpSampler> httpSamplers = driverRequests.stream()
                 .map(req -> {
-                    final List<TestPlan.Header> headers = headers(req.getHeaders());
+                    final List<TestPlan.Header> headers = headers(fixHeaders(req.getHeaders()));
                     final String name = req.getMethod() + " " + req.getPath();
                     return new TestPlan.HttpSampler(req.getBody(), domain, headers, req.getMethod(), name, req.getPath(), port, protocol);
                 })
@@ -78,5 +80,29 @@ public class BlackBoxTestPlanFactory implements TestPlanFactory {
         return headerMap.entrySet().stream()
                 .map(entry -> new TestPlan.Header(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * When you do not give jmeter a Content-Type header, it uses x-www-form-urlencoded and attaches the request body as
+     * a form parameter, NOT an actual post body. Apply a default Content-Type header if one is not found.
+     *
+     * @param headers the user's headers
+     * @return the fixed headers
+     */
+    static Map<String, String> fixHeaders(Map<String, String> headers) {
+        final boolean hasContentType = headers.keySet().stream()
+                .anyMatch(key -> key.equalsIgnoreCase("Content-Type"));
+
+        if (hasContentType) {
+            return headers;
+        } else {
+            return concatMaps(headers, Collections.singletonMap("Content-Type", "text/plain"));
+        }
+
+    }
+
+    private static Map<String, String> concatMaps(Map<String, String> a, Map<String, String> b) {
+        return Stream.concat(a.entrySet().stream(), b.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

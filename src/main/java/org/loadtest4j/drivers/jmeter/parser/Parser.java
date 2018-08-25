@@ -26,7 +26,6 @@ public class Parser {
         final long endTime = result.endTime;
         final Duration actualDuration = Duration.ofMillis(endTime - startTime);
 
-        // FIXME generate this
         final DriverResponseTime responseTime = new JMeterResponseTime();
 
         return new JMeterResult(actualDuration, ok, ko, reportUrl, responseTime);

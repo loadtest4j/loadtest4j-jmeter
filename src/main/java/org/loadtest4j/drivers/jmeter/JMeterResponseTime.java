@@ -8,6 +8,6 @@ public class JMeterResponseTime implements DriverResponseTime {
     @Override
     public Duration getPercentile(int percentile) {
         // FIXME do the real thing
-        return Duration.ZERO;
+        throw new UnsupportedOperationException("The JMeter driver does not yet provide response time data.");
     }
 }

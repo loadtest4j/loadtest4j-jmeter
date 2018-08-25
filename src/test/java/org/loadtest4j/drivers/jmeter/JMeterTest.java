@@ -14,9 +14,7 @@ import org.loadtest4j.driver.DriverResult;
 import org.loadtest4j.drivers.jmeter.junit.DriverResultAssert;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
