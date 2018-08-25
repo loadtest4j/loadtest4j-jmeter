@@ -39,27 +39,21 @@ public class BlackBoxTestPlanFactory implements TestPlanFactory {
 
     @Override
     public File create(List<DriverRequest> driverRequests) {
-        final MustacheFactory mf = new DefaultMustacheFactory();
-        final Mustache mustache = mf.compile("loadtest4j.jmx.mustache");
-
-        final File jmxFile;
         try {
-            jmxFile = File.createTempFile("loadtest4j", ".jmx");
+            final File jmxFile = File.createTempFile("loadtest4j", ".jmx");
+            try (Writer writer = new OutputStreamWriter(new FileOutputStream(jmxFile), StandardCharsets.UTF_8)) {
+                create(driverRequests, writer);
+            }
+            return jmxFile;
         } catch (IOException e) {
             throw new LoadTesterException(e);
         }
-
-        try (Writer writer = createWriter(jmxFile)) {
-            mustache.execute(writer, testPlan(driverRequests)).flush();
-        } catch (IOException e) {
-            throw new LoadTesterException(e);
-        }
-
-        return jmxFile;
     }
 
-    private static Writer createWriter(File file) throws FileNotFoundException {
-        return new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
+    void create(List<DriverRequest> driverRequests, Writer writer) throws IOException {
+        final MustacheFactory mf = new DefaultMustacheFactory();
+        final Mustache mustache = mf.compile("loadtest4j.jmx.mustache");
+        mustache.execute(writer, testPlan(driverRequests)).flush();
     }
 
     private TestPlan testPlan(List<DriverRequest> driverRequests) {

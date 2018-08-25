@@ -6,12 +6,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.rules.ExpectedException;
 import org.loadtest4j.LoadTesterException;
 import org.loadtest4j.driver.Driver;
 import org.loadtest4j.driver.DriverRequest;
 import org.loadtest4j.driver.DriverResult;
 import org.loadtest4j.drivers.jmeter.junit.DriverResultAssert;
+import org.loadtest4j.drivers.jmeter.junit.IntegrationTest;
 
 import java.time.Duration;
 import java.util.*;
@@ -22,6 +24,7 @@ import static com.xebialabs.restito.builder.stub.StubHttp.whenHttp;
 import static com.xebialabs.restito.semantics.Action.status;
 import static com.xebialabs.restito.semantics.Condition.*;
 
+@Category(IntegrationTest.class)
 public class JMeterTest {
 
     private static final Duration EXPECTED_DURATION = Duration.ofSeconds(1);

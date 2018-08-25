@@ -2,9 +2,12 @@ package org.loadtest4j.drivers.jmeter;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.rules.ExpectedException;
 import org.loadtest4j.driver.DriverResponseTime;
+import org.loadtest4j.drivers.jmeter.junit.UnitTest;
 
+@Category(UnitTest.class)
 public class JMeterResponseTimeTest {
 
     @Rule

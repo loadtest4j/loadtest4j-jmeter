@@ -2,11 +2,14 @@ package org.loadtest4j.drivers.jmeter.parser;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.loadtest4j.drivers.jmeter.JMeterResult;
+import org.loadtest4j.drivers.jmeter.junit.UnitTest;
 
 import java.net.URL;
 import java.time.Duration;
 
+@Category(UnitTest.class)
 public class ParserTest {
 
     private static URL fixture(String name) {

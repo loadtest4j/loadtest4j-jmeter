@@ -2,6 +2,8 @@ package org.loadtest4j.drivers.jmeter.parser;
 
 import jdk.nashorn.api.scripting.URLReader;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.loadtest4j.drivers.jmeter.junit.UnitTest;
 
 import java.io.Reader;
 import java.util.LinkedHashMap;
@@ -11,6 +13,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Category(UnitTest.class)
 public class CsvStreamTest {
 
     private static Reader fixture(String name) {
