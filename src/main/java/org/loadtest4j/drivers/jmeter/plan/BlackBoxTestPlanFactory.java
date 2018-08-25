@@ -61,7 +61,8 @@ public class BlackBoxTestPlanFactory implements TestPlanFactory {
                 .map(req -> {
                     final List<TestPlan.Header> headers = headers(fixHeaders(req.getHeaders()));
                     final String name = req.getMethod() + " " + req.getPath();
-                    return new TestPlan.HttpSampler(req.getBody(), domain, headers, req.getMethod(), name, req.getPath(), port, protocol);
+                    final String path = req.getPath() + QueryString.fromMap(req.getQueryParams());
+                    return new TestPlan.HttpSampler(req.getBody(), domain, headers, req.getMethod(), name, path, port, protocol);
                 })
                 .collect(Collectors.toList());
 
