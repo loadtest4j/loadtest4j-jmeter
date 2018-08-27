@@ -27,7 +27,7 @@ import static com.xebialabs.restito.semantics.Condition.*;
 @Category(IntegrationTest.class)
 public class JMeterTest {
 
-    private static final Duration EXPECTED_DURATION = Duration.ofSeconds(1);
+    private static final Duration EXPECTED_DURATION = Duration.ofMillis(500);
 
     private StubServer httpServer;
 

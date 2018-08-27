@@ -33,6 +33,7 @@ public class NativeEngine implements Engine {
 
         final Path resultFile = newResultFile();
 
+        // FIXME add the result collector in JMX config file
         addResultCollector(hashTree, resultFile);
 
         final StandardJMeterEngine jm = new StandardJMeterEngine();

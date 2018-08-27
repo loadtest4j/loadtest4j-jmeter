@@ -1,67 +1,50 @@
 package org.loadtest4j.drivers.jmeter.parser;
 
 import jdk.nashorn.api.scripting.URLReader;
+import org.loadtest4j.LoadTesterException;
 import org.loadtest4j.driver.DriverResponseTime;
 import org.loadtest4j.drivers.jmeter.JMeterResponseTime;
 import org.loadtest4j.drivers.jmeter.JMeterResult;
+import org.supercsv.io.CsvBeanReader;
+import org.supercsv.io.ICsvBeanReader;
+import org.supercsv.prefs.CsvPreference;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
-import java.util.Map;
 
 public class Parser {
     public JMeterResult parse(URL results) {
         final String reportUrl = results.toString();
 
-        final CombiResult result = CsvStream.stream(new URLReader(results))
-                .map(Parser::toCombiResult)
-                .reduce(Parser::reducer)
-                .orElse(CombiResult.ZERO);
+        final ActualDurationCalculator actualDurationCalculator = new ActualDurationCalculator();
+        final OkCalculator okCalculator = new OkCalculator();
+        final KoCalculator koCalculator = new KoCalculator();
+        final ResponseTimeCalculator responseTimeCalculator = new ResponseTimeCalculator();
 
-        final long ok = result.ok;
+        try (ICsvBeanReader csvReader = new CsvBeanReader(new URLReader(results), CsvPreference.STANDARD_PREFERENCE)) {
+            final String[] header = csvReader.getHeader(true);
 
-        final long ko = result.ko;
-
-        final long startTime = result.startTime;
-        final long endTime = result.endTime;
-        final Duration actualDuration = Duration.ofMillis(endTime - startTime);
-
-        final DriverResponseTime responseTime = new JMeterResponseTime();
-
-        return new JMeterResult(actualDuration, ok, ko, reportUrl, responseTime);
-    }
-
-    private static CombiResult reducer(CombiResult acc, CombiResult newResult) {
-        final long ok = acc.ok + newResult.ok;
-        final long ko = acc.ko + newResult.ko;
-        final long startTime = Math.min(acc.startTime, newResult.startTime);
-        final long endTime = Math.max(acc.endTime, newResult.endTime);
-        return new CombiResult(ok, ko, startTime, endTime);
-    }
-
-    private static CombiResult toCombiResult(Map<String, String> sample) {
-        final boolean success = Boolean.parseBoolean(sample.get("success"));
-
-        final long ok = success ? 1 : 0;
-        final long ko = success ? 0 : 1;
-        final long startTime = Long.parseLong(sample.get("timeStamp"));
-        final long endTime = startTime + Long.parseLong(sample.get("elapsed"));
-        return new CombiResult(ok, ko, startTime, endTime);
-    }
-
-    private static class CombiResult {
-        private final long ok;
-        private final long ko;
-        private final long startTime;
-        private final long endTime;
-
-        private CombiResult(long ok, long ko, long startTime, long endTime) {
-            this.ok = ok;
-            this.ko = ko;
-            this.startTime = startTime;
-            this.endTime = endTime;
+            Sample sample;
+            while ((sample = csvReader.read(Sample.class, header)) != null) {
+                actualDurationCalculator.add(sample);
+                okCalculator.add(sample);
+                koCalculator.add(sample);
+                responseTimeCalculator.add(sample);
+            }
+        } catch (IOException e) {
+            throw new LoadTesterException(e);
         }
 
-        private static CombiResult ZERO = new CombiResult(0, 0, 0, 0);
+        final long ok = okCalculator.calculate();
+
+        final long ko = koCalculator.calculate();
+
+        final Duration actualDuration = actualDurationCalculator.calculate();
+
+        final Histogram histogram = responseTimeCalculator.calculate();
+        final DriverResponseTime responseTime = new JMeterResponseTime(histogram);
+
+        return new JMeterResult(actualDuration, ok, ko, reportUrl, responseTime);
     }
 }
