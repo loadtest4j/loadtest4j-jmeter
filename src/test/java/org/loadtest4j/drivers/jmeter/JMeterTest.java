@@ -69,8 +69,8 @@ public class JMeterTest {
                 .hasOkGreaterThan(0)
                 .hasKo(0)
                 .hasReportUrlWithScheme("file")
-                .hasActualDurationGreaterThan(EXPECTED_DURATION);
-                // FIXME re-enable this .hasMaxResponseTimeGreaterThan(Duration.ZERO);
+                .hasActualDurationGreaterThan(EXPECTED_DURATION)
+                .hasMaxResponseTimeGreaterThan(Duration.ZERO);
     }
 
     @Test
