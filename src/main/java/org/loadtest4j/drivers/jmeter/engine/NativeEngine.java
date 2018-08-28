@@ -21,93 +21,63 @@ public class NativeEngine implements Engine {
         this.resultsDirectory = resultsDirectory;
     }
 
-    public static NativeEngine standard() {
-        final Path resultsDirectory = new File(System.getProperty("user.dir")).toPath().resolve("results");
-        return new NativeEngine(resultsDirectory);
-    }
-
     @Override
     public File runJmeter(File testPlan) {
-        loadJmeterProperties();
-
-        final HashTree hashTree = loadTestPlan(testPlan);
-
-        final Path resultFile = newResultFile();
-
-        // FIXME add the result collector in JMX config file
-        addResultCollector(hashTree, resultFile);
-
-        final StandardJMeterEngine jm = new StandardJMeterEngine();
-
-        jm.configure(hashTree);
-
-        jm.run();
-
-        return resultFile.toFile();
-
-    }
-
-    /**
-     * Run this before constructing jmeter API objects because they may read these properties.
-     */
-    private static void loadJmeterProperties() {
-        final File jmeterHome = createTempDirectory("jmeter_home");
-        extractConfigSettings(jmeterHome);
-
-        JMeterUtils.setJMeterHome(jmeterHome.getAbsolutePath());
-
-        final Path jmeterProperties = jmeterHome.toPath().resolve("bin").resolve("jmeter.properties");
-        JMeterUtils.loadJMeterProperties(jmeterProperties.toString());
-    }
-
-    private static File createTempDirectory(String prefix) {
         try {
-            return Files.createTempDirectory(prefix).toFile();
+            final Path resultFile = newResultFile(this.resultsDirectory);
+
+            loadJmeterProperties();
+            final HashTree hashTree = loadTestPlan(testPlan);
+            addResultCollector(hashTree, resultFile);
+            final StandardJMeterEngine jm = new StandardJMeterEngine();
+            jm.configure(hashTree);
+            jm.run();
+
+            return resultFile.toFile();
         } catch (IOException e) {
             throw new LoadTesterException(e);
         }
     }
 
-    private static void extractConfigSettings(File jmeterHome) {
-        try {
-            Resources.copy("bin", new File(jmeterHome, "bin"));
-        } catch (IOException e) {
-            throw new LoadTesterException(e);
-        }
-    }
-
-    private static HashTree loadTestPlan(File testPlan) {
-        try {
-            return  SaveService.loadTree(testPlan);
-        } catch (IOException e) {
-            throw new LoadTesterException(e);
-        }
-    }
-
-    private Path newResultFile() {
+    private static Path newResultFile(Path resultsDirectory) throws IOException {
         final String timestamp = String.valueOf(System.currentTimeMillis());
 
-        final Path proposedPath = this.resultsDirectory
+        final Path proposedPath = resultsDirectory
                 .resolve("loadtest4j-" + timestamp)
                 .resolve("result.jtl");
 
         if (Files.exists(proposedPath)) {
-            throw new LoadTesterException("JMeter result file already exists.");
+            throw new IOException("JMeter result file already exists.");
         }
 
         return proposedPath;
     }
 
-    private static void addResultCollector(HashTree hashTree, Path resultFile) {
-        final ResultCollector resultCollector = createResultCollector(resultFile);
+    /**
+     * Run this before constructing jmeter API objects because they may read these properties.
+     */
+    private static void loadJmeterProperties() throws IOException {
+        final Path jmeterHome = createJMeterHome();
+        JMeterUtils.setJMeterHome(jmeterHome.toAbsolutePath().toString());
 
-        hashTree.add(hashTree.getArray()[0], resultCollector);
+        final Path jmeterProperties = jmeterHome.resolve("bin").resolve("jmeter.properties");
+        JMeterUtils.loadJMeterProperties(jmeterProperties.toString());
     }
 
-    private static ResultCollector createResultCollector(Path resultFile) {
+    private static Path createJMeterHome() throws IOException {
+        final File jmeterHome = Files.createTempDirectory("jmeter_home").toFile();
+        Resources.copy("bin", new File(jmeterHome, "bin"));
+        return jmeterHome.toPath();
+    }
+
+    private static HashTree loadTestPlan(File testPlan) throws IOException {
+        return SaveService.loadTree(testPlan);
+    }
+
+    private static void addResultCollector(HashTree hashTree, Path resultFile) {
         final ResultCollector resultCollector = new ResultCollector();
         resultCollector.setFilename(resultFile.toFile().getAbsolutePath());
 
-        return resultCollector;
+        hashTree.add(hashTree.getArray()[0], resultCollector);
     }
 }

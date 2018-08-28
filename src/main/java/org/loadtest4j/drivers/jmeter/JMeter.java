@@ -13,6 +13,7 @@ import org.loadtest4j.drivers.jmeter.plan.TestPlanFactory;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 
@@ -59,7 +60,8 @@ class JMeter implements Driver {
     }
 
     private File runJmeter(File testPlan) {
-        final Engine engine = NativeEngine.standard();
+        final Path standardResultsDirectory = new File(System.getProperty("user.dir")).toPath().resolve("results");
+        final Engine engine = new NativeEngine(standardResultsDirectory);
         return engine.runJmeter(testPlan);
     }
 

@@ -20,14 +20,19 @@ public final class Resources {
      * Adapted from https://github.com/nguyenq/tess4j
      *
      * @param source the jar resource (file or 'folder')
-     * @param targetPath the destination to copy the resource to
+     * @param destination the destination to copy the resource to
      * @throws IOException if copying didn't work
      */
-    public static void copy(String source, File targetPath) throws IOException {
+    public static void copy(String source, File destination) throws IOException {
 
-        URL resourceUrl = Resources.class.getClassLoader().getResource(source);
+        final URL resourceUrl = Resources.class.getClassLoader().getResource(source);
 
-        JarURLConnection jarConnection = (JarURLConnection) resourceUrl.openConnection();
+        final JarURLConnection jarConnection;
+        try {
+            jarConnection = (JarURLConnection) resourceUrl.openConnection();
+        } catch (NullPointerException e) {
+            throw new IOException("Could not open a connection to the URL: " + source);
+        }
 
         try (JarFile jarFile = jarConnection.getJarFile()) {
             String jarConnectionEntryName = jarConnection.getEntryName();
@@ -37,16 +42,16 @@ public final class Resources {
 
             // Iterate all entries in the jar file.
             for (Enumeration<JarEntry> e = jarFile.entries(); e.hasMoreElements(); ) {
-                JarEntry jarEntry = e.nextElement();
-                String jarEntryName = jarEntry.getName();
+                final JarEntry jarEntry = e.nextElement();
+                final String jarEntryName = jarEntry.getName();
 
                 // Extract files only if they match the path.
                 if (jarEntryName.startsWith(jarConnectionEntryName)) {
-                    String filename = jarEntryName.substring(jarConnectionEntryName.length());
-                    File targetFile = new File(targetPath, filename);
+                    final String filename = jarEntryName.substring(jarConnectionEntryName.length());
+                    final File targetFile = new File(destination, filename);
 
                     if (jarEntry.isDirectory()) {
-                        boolean success = targetFile.mkdirs();
+                        final boolean success = targetFile.mkdirs();
                         if (!success) {
                             throw new IOException("Mkdir failed for: " + targetFile.getAbsolutePath());
                         }
