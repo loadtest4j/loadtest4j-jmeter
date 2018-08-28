@@ -1,4 +1,4 @@
-package org.loadtest4j.drivers.jmeter.plan;
+package org.loadtest4j.drivers.jmeter.util;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

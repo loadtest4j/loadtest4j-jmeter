@@ -1,29 +1,30 @@
-package org.loadtest4j.drivers.jmeter.parser;
+package org.loadtest4j.drivers.jmeter.util;
 
-import jdk.nashorn.api.scripting.URLReader;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.loadtest4j.drivers.jmeter.junit.UnitTest;
 
-import java.io.Reader;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(UnitTest.class)
-public class CsvStreamTest {
+public class CsvReaderTest {
 
-    private static Reader fixture(String name) {
-        return new URLReader(CsvStreamTest.class.getClassLoader().getResource(name));
+    private static URL fixture(String name) {
+        return CsvReaderTest.class.getClassLoader().getResource(name);
     }
 
     @Test
     public void testParse() {
-        final List<Map<String, String>> result = CsvStream.stream(fixture("csv/valid.csv"))
-                .collect(Collectors.toList());
+        final CsvReader csvReader = new CsvReader(fixture("csv/valid.csv"));
+
+        final List<Map<String, String>> result = new ArrayList<>();
+        csvReader.forEach(result::add);
 
         final Map<String, String> expected = new LinkedHashMap<String, String>() {{
             put("a", "foo");
@@ -36,7 +37,8 @@ public class CsvStreamTest {
 
     @Test(expected = CsvException.class)
     public void testParseInvalidCsv() {
-        CsvStream.stream(fixture("csv/invalid.csv"))
-                .collect(Collectors.toList());
+        final CsvReader csvReader = new CsvReader(fixture("csv/invalid.csv"));
+
+        csvReader.forEach(line -> {});
     }
 }
