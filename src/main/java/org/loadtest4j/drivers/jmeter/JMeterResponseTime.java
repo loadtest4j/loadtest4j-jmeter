@@ -1,7 +1,7 @@
 package org.loadtest4j.drivers.jmeter;
 
 import org.loadtest4j.driver.DriverResponseTime;
-import org.loadtest4j.drivers.jmeter.parser.Histogram;
+import org.loadtest4j.drivers.jmeter.util.Histogram;
 
 import java.time.Duration;
 

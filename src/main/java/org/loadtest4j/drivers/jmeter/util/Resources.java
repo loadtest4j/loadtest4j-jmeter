@@ -1,4 +1,4 @@
-package org.loadtest4j.drivers.jmeter.engine;
+package org.loadtest4j.drivers.jmeter.util;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -13,7 +13,7 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-final class Resources {
+public final class Resources {
     private Resources() {}
 
     /**
@@ -23,7 +23,7 @@ final class Resources {
      * @param targetPath the destination to copy the resource to
      * @throws IOException if copying didn't work
      */
-    static void copy(String source, File targetPath) throws IOException {
+    public static void copy(String source, File targetPath) throws IOException {
 
         URL resourceUrl = Resources.class.getClassLoader().getResource(source);
 

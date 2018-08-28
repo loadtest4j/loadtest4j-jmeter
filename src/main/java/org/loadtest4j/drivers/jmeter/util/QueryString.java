@@ -1,9 +1,9 @@
-package org.loadtest4j.drivers.jmeter.plan;
+package org.loadtest4j.drivers.jmeter.util;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 
-class QueryString {
+public class QueryString {
     private final Map<String, String> queryParams;
 
     private QueryString(Map<String, String> queryParams) {
@@ -22,7 +22,7 @@ class QueryString {
                 .collect(Collectors.joining("&"));
     }
 
-    static String fromMap(Map<String, String> queryParams) {
+    public static String fromMap(Map<String, String> queryParams) {
         return new QueryString(queryParams).toString();
     }
 }

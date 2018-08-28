@@ -1,4 +1,4 @@
-package org.loadtest4j.drivers.jmeter.parser.calculators;
+package org.loadtest4j.drivers.jmeter.util;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -19,7 +19,7 @@ public class MaxTest {
     public void testPositive() {
         final Max max = new Max();
 
-        max.add(1L);
+        max.accept(1L);
 
         assertThat(max.calculate()).isEqualTo(1);
     }
@@ -28,8 +28,8 @@ public class MaxTest {
     public void testPositiveSeries() {
         final Max max = new Max();
 
-        max.add(1L);
-        max.add(2L);
+        max.accept(1L);
+        max.accept(2L);
 
         assertThat(max.calculate()).isEqualTo(2);
     }
@@ -38,7 +38,7 @@ public class MaxTest {
     public void testNegative() {
         final Max max = new Max();
 
-        max.add(-1L);
+        max.accept(-1L);
 
         assertThat(max.calculate()).isEqualTo(-1);
     }
@@ -47,8 +47,8 @@ public class MaxTest {
     public void testNegativeSeries() {
         final Max max = new Max();
 
-        max.add(-1L);
-        max.add(-2L);
+        max.accept(-1L);
+        max.accept(-2L);
 
         assertThat(max.calculate()).isEqualTo(-1);
     }

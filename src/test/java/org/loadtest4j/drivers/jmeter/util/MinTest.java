@@ -1,4 +1,4 @@
-package org.loadtest4j.drivers.jmeter.parser.calculators;
+package org.loadtest4j.drivers.jmeter.util;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -19,7 +19,7 @@ public class MinTest {
     public void testPositive() {
         final Min min = new Min();
 
-        min.add(1L);
+        min.accept(1L);
 
         assertThat(min.calculate()).isEqualTo(1);
     }
@@ -28,8 +28,8 @@ public class MinTest {
     public void testPositiveSeries() {
         final Min min = new Min();
 
-        min.add(1L);
-        min.add(2L);
+        min.accept(1L);
+        min.accept(2L);
 
         assertThat(min.calculate()).isEqualTo(1);
     }
@@ -38,7 +38,7 @@ public class MinTest {
     public void testNegative() {
         final Min min = new Min();
 
-        min.add(-1L);
+        min.accept(-1L);
 
         assertThat(min.calculate()).isEqualTo(-1);
     }
@@ -47,8 +47,8 @@ public class MinTest {
     public void testNegativeSeries() {
         final Min min = new Min();
 
-        min.add(-1L);
-        min.add(-2L);
+        min.accept(-1L);
+        min.accept(-2L);
 
         assertThat(min.calculate()).isEqualTo(-2);
     }

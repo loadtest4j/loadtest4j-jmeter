@@ -1,14 +1,16 @@
-package org.loadtest4j.drivers.jmeter.parser.calculators;
+package org.loadtest4j.drivers.jmeter.util;
+
+import java.util.function.Consumer;
 
 /**
  * Gets the maximum of all whole numbers it sees. Default 0.
  */
-public class Max implements Calculator<Long> {
+public class Max implements Consumer<Long> {
 
     private long max = 0;
 
     @Override
-    public synchronized void add(Long value) {
+    public synchronized void accept(Long value) {
         if (max == 0) {
             max = value;
         }

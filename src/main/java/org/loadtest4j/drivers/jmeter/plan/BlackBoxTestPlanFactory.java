@@ -5,6 +5,7 @@ import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 import org.loadtest4j.LoadTesterException;
 import org.loadtest4j.driver.DriverRequest;
+import org.loadtest4j.drivers.jmeter.util.QueryString;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
