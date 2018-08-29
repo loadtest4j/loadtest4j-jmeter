@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.loadtest4j</groupId>
     <artifactId>loadtest4j-jmeter</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <url>https://github.com/loadtest4j/loadtest4j-jmeter</url>
     <description>JMeter driver for loadtest4j.</description>
 
