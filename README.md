@@ -4,7 +4,7 @@
 [![Codecov](https://codecov.io/gh/loadtest4j/loadtest4j-jmeter/branch/master/graph/badge.svg)](https://codecov.io/gh/loadtest4j/loadtest4j-jmeter)
 [![JitPack Release](https://jitpack.io/v/com.github.loadtest4j/loadtest4j-jmeter.svg)](https://jitpack.io/#com.github.loadtest4j/loadtest4j-jmeter)
 
-**EXPERIMENTAL** JMeter driver for loadtest4j.
+JMeter driver for loadtest4j.
 
 ## Setup
 
