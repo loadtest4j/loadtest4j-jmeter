@@ -12,7 +12,6 @@ public class Histogram {
     }
 
     public static Histogram standard() {
-        // TODO make num significant digits user-configurable
         final AbstractHistogram underlying = new ConcurrentHistogram(5);
         return new Histogram(underlying);
     }
