@@ -2,9 +2,8 @@
 
 [![Build Status](https://travis-ci.com/loadtest4j/loadtest4j-jmeter.svg?branch=master)](https://travis-ci.com/loadtest4j/loadtest4j-jmeter)
 [![Codecov](https://codecov.io/gh/loadtest4j/loadtest4j-jmeter/branch/master/graph/badge.svg)](https://codecov.io/gh/loadtest4j/loadtest4j-jmeter)
-[![JitPack Release](https://jitpack.io/v/com.github.loadtest4j/loadtest4j-jmeter.svg)](https://jitpack.io/#com.github.loadtest4j/loadtest4j-jmeter)
 
-JMeter driver for loadtest4j.
+Apache JMeter driver for loadtest4j.
 
 ## Setup
 
@@ -17,13 +16,6 @@ JMeter driver for loadtest4j.
         <version>[version]</version>
         <scope>test</scope>
     </dependency>   
-    ```
-     
-    ```xml
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
     ```
 
 2. **Configure the driver** in `src/test/resources/loadtest4j.properties`:
