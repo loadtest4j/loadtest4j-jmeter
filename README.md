@@ -31,5 +31,13 @@ Apache JMeter driver for loadtest4j.
 
 3. **Write your load tests** using the standard [LoadTester API](https://github.com/loadtest4j/loadtest4j).
 
+## Generate HTML reports
 
+The driver provides JMeter's JTL report file as an output. A standalone copy of JMeter can generate an HTML report after 
+the test with the following command:
 
+```bash
+jmeter -g /path/to/result.jtl -o /path/to/html
+```
+
+You can also post-process the JTL file with any other compatible tool of your choice.
