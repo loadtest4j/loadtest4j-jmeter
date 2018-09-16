@@ -33,8 +33,9 @@ Apache JMeter driver for loadtest4j.
 
 ## Generate HTML reports
 
-The driver provides JMeter's JTL report file as an output. A standalone copy of JMeter can generate an HTML report after 
-the test with the following command:
+The driver instructs JMeter to write its JTL report file to `results/loadtest4j-[timestamp]/result.jtl`.
+
+A standalone copy of JMeter can generate an HTML report from this file with the following command:
 
 ```bash
 jmeter -g /path/to/result.jtl -o /path/to/html
