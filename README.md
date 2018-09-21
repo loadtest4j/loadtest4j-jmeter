@@ -14,7 +14,6 @@ Apache JMeter driver for loadtest4j.
     <dependency>
         <groupId>org.loadtest4j.drivers</groupId>
         <artifactId>loadtest4j-jmeter</artifactId>
-        <version>[version]</version>
         <scope>test</scope>
     </dependency>
     ```
