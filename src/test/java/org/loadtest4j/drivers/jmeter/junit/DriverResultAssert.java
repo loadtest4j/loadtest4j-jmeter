@@ -76,20 +76,6 @@ public class DriverResultAssert extends AbstractAssert<DriverResultAssert, Drive
         return this;
     }
 
-    public DriverResultAssert hasReportUrlWithScheme(String scheme) {
-        isNotNull();
-
-        if (!actual.getReportUrl().isPresent()) {
-            failWithMessage("Expected report URL to be present but was absent");
-        }
-
-        if (!actual.getReportUrl().get().startsWith(scheme)) {
-            failWithMessage("Expected report URL scheme to be <%s> but it was not", scheme);
-        }
-
-        return this;
-    }
-
     public DriverResultAssert hasResponseTimePercentile(int percentile, Duration responseTime) {
         isNotNull();
 

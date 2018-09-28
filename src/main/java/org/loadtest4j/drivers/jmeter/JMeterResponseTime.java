@@ -14,7 +14,7 @@ public class JMeterResponseTime implements DriverResponseTime {
     }
 
     @Override
-    public Duration getPercentile(int percentile) {
+    public Duration getPercentile(double percentile) {
         final long durationMillis = histogram.getValue(percentile);
         return Duration.ofMillis(durationMillis);
     }

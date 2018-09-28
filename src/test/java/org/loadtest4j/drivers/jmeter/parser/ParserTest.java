@@ -30,7 +30,6 @@ public class ParserTest {
             s.assertThat(result.getActualDuration()).as("Actual Duration").isEqualTo(Duration.ofMillis(8997));
             s.assertThat(result.getKo()).as("KO").isEqualTo(0);
             s.assertThat(result.getOk()).as("OK").isEqualTo(10);
-            s.assertThat(result.getReportUrl()).as("Report URL").isPresent();
             s.assertThat(result.getResponseTime().getPercentile(100)).as("Max Response Time").isEqualTo(Duration.ofMillis(728));
         });
     }
@@ -45,7 +44,6 @@ public class ParserTest {
             s.assertThat(result.getActualDuration()).as("Actual Duration").isEqualTo(Duration.ZERO);
             s.assertThat(result.getKo()).as("KO").isEqualTo(0);
             s.assertThat(result.getOk()).as("OK").isEqualTo(0);
-            s.assertThat(result.getReportUrl()).as("Report URL").isPresent();
             s.assertThat(result.getResponseTime().getPercentile(100)).as("Max Response Time").isEqualTo(Duration.ZERO);
         });
     }

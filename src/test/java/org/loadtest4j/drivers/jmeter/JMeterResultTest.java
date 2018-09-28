@@ -16,7 +16,6 @@ public class JMeterResultTest {
     private static final long OK = 1;
     private static final long KO = 2;
     private static final Duration DURATION = Duration.ofSeconds(1);
-    private static final String REPORT_URL = "file:/tmp/loadtest4j.jtl";
     private static final Duration RESPONSE_TIME = Duration.ofMillis(100);
 
     private JMeterResult result;
@@ -24,7 +23,7 @@ public class JMeterResultTest {
     @Before
     public void setUp() {
         final DriverResponseTime fn = i -> RESPONSE_TIME;
-        result = new JMeterResult(DURATION, OK, KO, REPORT_URL, fn);
+        result = new JMeterResult(DURATION, OK, KO, fn);
     }
 
     @Test
@@ -43,13 +42,6 @@ public class JMeterResultTest {
     public void testGetKo() {
         assertThat(result.getKo())
                 .isEqualTo(KO);
-    }
-
-    @Test
-    public void testGetReportUrl() {
-        assertThat(result.getReportUrl())
-                .isPresent()
-                .contains(REPORT_URL);
     }
 
     @Test

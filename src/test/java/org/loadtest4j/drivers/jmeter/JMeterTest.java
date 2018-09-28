@@ -68,7 +68,6 @@ public class JMeterTest {
         DriverResultAssert.assertThat(result)
                 .hasOkGreaterThan(0)
                 .hasKo(0)
-                .hasReportUrlWithScheme("file")
                 .hasActualDurationGreaterThan(EXPECTED_DURATION)
                 .hasMaxResponseTimeGreaterThan(Duration.ZERO);
     }
