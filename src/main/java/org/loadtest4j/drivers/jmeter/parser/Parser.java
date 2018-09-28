@@ -22,6 +22,6 @@ public class Parser {
 
         final DriverResponseTime responseTime = new JMeterResponseTime(responseTimeHistogram.get());
 
-        return new JMeterResult(actualDuration.get(), ok.get(), ko.get(), results.toString(), responseTime);
+        return new JMeterResult(actualDuration.get(), ok.get(), ko.get(), responseTime);
     }
 }

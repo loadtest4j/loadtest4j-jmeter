@@ -4,7 +4,6 @@ import org.loadtest4j.driver.DriverResponseTime;
 import org.loadtest4j.driver.DriverResult;
 
 import java.time.Duration;
-import java.util.Optional;
 
 public class JMeterResult implements DriverResult {
 
@@ -14,15 +13,12 @@ public class JMeterResult implements DriverResult {
 
     private final long ko;
 
-    private final String reportUrl;
-
     private final DriverResponseTime responseTime;
 
-    public JMeterResult(Duration actualDuration, long ok, long ko, String reportUrl, DriverResponseTime responseTime) {
+    public JMeterResult(Duration actualDuration, long ok, long ko, DriverResponseTime responseTime) {
         this.actualDuration = actualDuration;
         this.ok = ok;
         this.ko = ko;
-        this.reportUrl = reportUrl;
         this.responseTime = responseTime;
     }
 
@@ -44,10 +40,5 @@ public class JMeterResult implements DriverResult {
     @Override
     public DriverResponseTime getResponseTime() {
         return responseTime;
-    }
-
-    @Override
-    public Optional<String> getReportUrl() {
-        return Optional.of(reportUrl);
     }
 }

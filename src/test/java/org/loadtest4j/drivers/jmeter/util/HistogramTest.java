@@ -25,4 +25,22 @@ public class HistogramTest {
 
         assertThat(max).isEqualTo(0L);
     }
+
+    @Test
+    public void testGetTooHighPercentile() {
+        final Histogram histogram = Histogram.of(1, 2, 3);
+
+        final long time = histogram.getValue(101);
+
+        assertThat(time).isEqualTo(3L);
+    }
+
+    @Test
+    public void testGetTooLowPercentile() {
+        final Histogram histogram = Histogram.of(1, 2, 3);
+
+        final long time = histogram.getValue(-1);
+
+        assertThat(time).isEqualTo(1L);
+    }
 }
