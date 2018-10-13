@@ -31,4 +31,8 @@ public class Histogram {
     public long getValue(double percentile) {
         return histogram.getValueAtPercentile(percentile);
     }
+
+    public long getCountBetweenValues(long lowValue, long highValue) {
+        return histogram.getCountBetweenValues(lowValue, highValue);
+    }
 }
