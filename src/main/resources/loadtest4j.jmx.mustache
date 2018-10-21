@@ -28,6 +28,17 @@
       <hashTree>
         {{#httpSamplers}}
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="{{name}}" enabled="true">
+          <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
+            <collectionProp name="HTTPFileArgs.files">
+              {{#files}}
+              <elementProp name="{{path}}" elementType="HTTPFileArg">
+                <stringProp name="File.path">{{path}}</stringProp>
+                <stringProp name="File.paramname">{{name}}</stringProp>
+                <stringProp name="File.mimetype">{{mimetype}}</stringProp>
+              </elementProp>
+              {{/files}}
+            </collectionProp>
+          </elementProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
@@ -47,11 +58,13 @@
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <!-- FIXME conditionally turn this on when it's a file upload -->
           <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
           <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
+        <!-- FIXME if custom headers are even present then the multipart header is blown away -->
         <hashTree>
           <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
             <collectionProp name="HeaderManager.headers">

@@ -1,6 +1,8 @@
 package org.loadtest4j.drivers.jmeter;
 
+import com.xebialabs.restito.builder.verify.VerifyHttp;
 import com.xebialabs.restito.server.StubServer;
+import org.glassfish.grizzly.http.Method;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
@@ -8,21 +10,30 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.ExpectedException;
+import org.junit.rules.TemporaryFolder;
+import org.loadtest4j.Body;
 import org.loadtest4j.LoadTesterException;
 import org.loadtest4j.driver.Driver;
 import org.loadtest4j.driver.DriverRequest;
 import org.loadtest4j.driver.DriverResult;
-import org.loadtest4j.drivers.jmeter.junit.DriverResultAssert;
 import org.loadtest4j.drivers.jmeter.junit.IntegrationTest;
+import org.loadtest4j.drivers.jmeter.junit.MultiPartConditions;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.xebialabs.restito.builder.stub.StubHttp.whenHttp;
 import static com.xebialabs.restito.semantics.Action.status;
 import static com.xebialabs.restito.semantics.Condition.*;
+import static org.loadtest4j.drivers.jmeter.junit.DriverResultAssert.assertThat;
 
 @Category(IntegrationTest.class)
 public class JMeterTest {
@@ -38,6 +49,20 @@ public class JMeterTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
+
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
+    private Path createTempFile(String name, String content) {
+        final Path file;
+        try {
+            file = temporaryFolder.newFile(name).toPath();
+            Files.write(file, Collections.singleton(content));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return file;
+    }
 
     @Before
     public void startServer() {
@@ -65,7 +90,7 @@ public class JMeterTest {
         final DriverResult result = driver.run(requests);
 
         // Then
-        DriverResultAssert.assertThat(result)
+        assertThat(result)
                 .hasOkGreaterThan(0)
                 .hasKo(0)
                 .hasActualDurationGreaterThan(EXPECTED_DURATION)
@@ -86,7 +111,7 @@ public class JMeterTest {
         final DriverResult result = driver.run(requests);
 
         // Then
-        DriverResultAssert.assertThat(result)
+        assertThat(result)
                 .hasOkGreaterThan(0)
                 .hasKo(0);
     }
@@ -103,12 +128,12 @@ public class JMeterTest {
         whenHttp(httpServer).match(post("/pets"), withPostBodyContaining(body)).then(status(HttpStatus.OK_200));
 
         // When
-        final DriverRequest edgeCaseReq = new DriverRequest(body, Collections.emptyMap(),"POST","/pets", Collections.emptyMap());
+        final DriverRequest edgeCaseReq = new DriverRequest(Body.string(body), Collections.emptyMap(),"POST","/pets", Collections.emptyMap());
         final List<DriverRequest> requests = Collections.singletonList(edgeCaseReq);
         final DriverResult result = driver.run(requests);
 
         // Then
-        DriverResultAssert.assertThat(result)
+        assertThat(result)
                 .hasOkGreaterThan(0)
                 .hasKo(0);
     }
@@ -123,7 +148,7 @@ public class JMeterTest {
                 .then(status(HttpStatus.OK_200));
 
         // When
-        final DriverRequest edgeCaseReq = new DriverRequest("three\ngreen\nbottles",
+        final DriverRequest edgeCaseReq = new DriverRequest(Body.string("three\ngreen\nbottles"),
                 Collections.singletonMap("fo'o", "ba'r"),
                 "POST",
                 "/pets",
@@ -132,7 +157,7 @@ public class JMeterTest {
         final DriverResult result = driver.run(requests);
 
         // Then
-        DriverResultAssert.assertThat(result)
+        assertThat(result)
                 .hasOkGreaterThan(0)
                 .hasKo(0);
     }
@@ -149,7 +174,7 @@ public class JMeterTest {
         final DriverResult result = driver.run(requests);
 
         // Then
-        DriverResultAssert.assertThat(result)
+        assertThat(result)
                 .hasOk(0)
                 .hasKoGreaterThan(0);
     }
@@ -166,7 +191,7 @@ public class JMeterTest {
         final DriverResult result = driver.run(requests);
 
         // Then
-        DriverResultAssert.assertThat(result)
+        assertThat(result)
                 .hasOkGreaterThan(0)
                 .hasKo(0);
     }
@@ -181,9 +206,61 @@ public class JMeterTest {
         final DriverResult result = driver.run(requests);
 
         // Then
-        DriverResultAssert.assertThat(result)
+        assertThat(result)
                 .hasOk(0)
                 .hasKoGreaterThan(0);
+    }
+
+    @Test
+    public void testRunWithMultiPartFileUpload() {
+        // Given
+        final Driver driver = sut();
+        // And
+        final Path foo = createTempFile("foo.txt", "foo");
+        final Path bar = createTempFile("bar.txt", "bar");
+        // And
+        whenHttp(httpServer)
+                .match(post("/"),
+                        withHeader("Authorization", "Bearer abc123"),
+                        // FIXME jmeter does not attach Content-Type: multipart/form-data if custom headers are present
+                        MultiPartConditions.withMultipartFormHeader(),
+                        MultiPartConditions.withPostBodyContainingFilePart("foo.txt", "text/plain", "foo"),
+                        MultiPartConditions.withPostBodyContainingFilePart("bar.txt", "text/plain", "bar"))
+                .then(status(HttpStatus.OK_200));
+
+        // When
+        final Map<String, String> headers = Collections.singletonMap("Authorization", "Bearer abc123");
+        final DriverRequest request = DriverRequests.uploadMultiPart("/", foo, bar, headers);
+        final DriverResult result = driver.run(Collections.singletonList(request));
+
+        // Then
+        assertThat(result)
+                .hasOkGreaterThan(1)
+                .hasKo(0);
+        // And
+        VerifyHttp.verifyHttp(httpServer).atLeast(1,
+                method(Method.POST),
+                uri("/"),
+                withHeader("Authorization", "Bearer abc123"),
+                // FIXME jmeter does not attach Content-Type: multipart/form-data if custom headers are present
+                MultiPartConditions.withMultipartFormHeader(),
+                MultiPartConditions.withPostBodyContainingFilePart("foo.txt", "text/plain", "foo"),
+                MultiPartConditions.withPostBodyContainingFilePart("bar.txt", "text/plain", "bar"));
+    }
+
+    @Test
+    public void testRunWithMultiPartStringUpload() {
+        // Given
+        final Driver driver = sut();
+
+        // Expect
+        thrown.expect(UnsupportedOperationException.class);
+        thrown.expectMessage("This driver does not support string parts in multipart requests.");
+
+        // When
+        final Map<String, String> headers = Collections.singletonMap("Authorization", "Bearer abc123");
+        final DriverRequest request = DriverRequests.uploadMultiPart("/", "a", "foo", "b", "bar", headers);
+        driver.run(Collections.singletonList(request));
     }
 
     @Test
