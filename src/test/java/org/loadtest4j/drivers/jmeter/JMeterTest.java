@@ -222,7 +222,6 @@ public class JMeterTest {
         whenHttp(httpServer)
                 .match(post("/"),
                         withHeader("Authorization", "Bearer abc123"),
-                        // FIXME jmeter does not attach Content-Type: multipart/form-data if custom headers are present
                         MultiPartConditions.withMultipartFormHeader(),
                         MultiPartConditions.withPostBodyContainingFilePart("foo.txt", "text/plain", "foo"),
                         MultiPartConditions.withPostBodyContainingFilePart("bar.txt", "text/plain", "bar"))
@@ -242,7 +241,6 @@ public class JMeterTest {
                 method(Method.POST),
                 uri("/"),
                 withHeader("Authorization", "Bearer abc123"),
-                // FIXME jmeter does not attach Content-Type: multipart/form-data if custom headers are present
                 MultiPartConditions.withMultipartFormHeader(),
                 MultiPartConditions.withPostBodyContainingFilePart("foo.txt", "text/plain", "foo"),
                 MultiPartConditions.withPostBodyContainingFilePart("bar.txt", "text/plain", "bar"));

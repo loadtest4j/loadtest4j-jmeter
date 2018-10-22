@@ -63,11 +63,9 @@ public class BlackBoxTestPlanFactory implements TestPlanFactory {
     private TestPlan testPlan(List<DriverRequest> driverRequests) {
         final List<TestPlan.HttpSampler> httpSamplers = driverRequests.stream()
                 .map(req -> {
-                    final List<TestPlan.Header> headers = headers(fixHeaders(req.getHeaders()));
                     final String name = req.getMethod() + " " + req.getPath();
                     final String path = req.getPath() + QueryString.fromMap(req.getQueryParams());
-                    final String method = req.getMethod();
-                    return req.getBody().accept(new JMeterBodyVisitor(domain, headers, method, name, path, port, protocol));
+                    return req.getBody().accept(new JMeterBodyVisitor(domain, req.getHeaders(), req.getMethod(), name, path, port, protocol));
                 })
                 .collect(Collectors.toList());
 
@@ -103,14 +101,14 @@ public class BlackBoxTestPlanFactory implements TestPlanFactory {
     private static class JMeterBodyVisitor implements Body.Visitor<TestPlan.HttpSampler> {
 
         private final String domain;
-        private final List<TestPlan.Header> headers;
+        private final Map<String, String> headers;
         private final String method;
         private final String name;
         private final String path;
         private final int port;
         private final String protocol;
 
-        private JMeterBodyVisitor(String domain, List<TestPlan.Header> headers, String method, String name, String path, int port, String protocol) {
+        private JMeterBodyVisitor(String domain, Map<String, String> headers, String method, String name, String path, int port, String protocol) {
             this.domain = domain;
             this.headers = headers;
             this.method = method;
@@ -122,11 +120,13 @@ public class BlackBoxTestPlanFactory implements TestPlanFactory {
 
         @Override
         public TestPlan.HttpSampler string(String content) {
+            final List<TestPlan.Header> headers = headers(fixHeaders(this.headers));
             return new TestPlan.HttpSampler(content, domain, headers, method, name, path, port, protocol);
         }
 
         @Override
         public TestPlan.HttpSampler parts(List<BodyPart> body) {
+            final List<TestPlan.Header> headers = headers(this.headers);
             final List<TestPlan.File> files = body.stream()
                     .map(part -> part.accept(new JMeterBodyPartVisitor()))
                     .collect(Collectors.toList());
