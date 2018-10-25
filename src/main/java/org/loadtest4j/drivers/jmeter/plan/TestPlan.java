@@ -1,6 +1,5 @@
 package org.loadtest4j.drivers.jmeter.plan;
 
-import java.util.Collections;
 import java.util.List;
 
 class TestPlan {
@@ -34,22 +33,10 @@ class TestPlan {
         final int port;
         final String protocol;
 
-        HttpSampler(String domain, List<File> files, List<Header> headers, String method, String name, String path, int port, String protocol) {
-            this.body = null;
-            this.domain = domain;
-            this.files = files;
-            this.headers = headers;
-            this.method = method;
-            this.name = name;
-            this.path = path;
-            this.port = port;
-            this.protocol = protocol;
-        }
-
-        HttpSampler(String body, String domain, List<Header> headers, String method, String name, String path, int port, String protocol) {
+        HttpSampler(String body, String domain, List<File> files, List<Header> headers, String method, String name, String path, int port, String protocol) {
             this.body = body;
             this.domain = domain;
-            this.files = Collections.emptyList();
+            this.files = files;
             this.headers = headers;
             this.method = method;
             this.name = name;

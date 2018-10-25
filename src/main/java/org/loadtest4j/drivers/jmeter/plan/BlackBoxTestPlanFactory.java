@@ -10,6 +10,7 @@ import org.loadtest4j.drivers.jmeter.util.QueryString;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -59,12 +60,22 @@ public class BlackBoxTestPlanFactory implements TestPlanFactory {
                 .map(req -> {
                     final String name = req.getMethod() + " " + req.getPath();
                     final String path = req.getPath() + QueryString.fromMap(req.getQueryParams());
-                    return req.getBody().accept(new JMeterBodyVisitor(domain, req.getHeaders(), req.getMethod(), name, path, port, protocol));
+
+                    final List<TestPlan.Header> headers = headers(req.getBody().accept(new JMeterHeadersVisitor(req.getHeaders())));
+                    final String body = req.getBody().accept(new JMeterBodyVisitor());
+                    final List<TestPlan.File> files = req.getBody().accept(new JMeterFilesVisitor());
+                    return new TestPlan.HttpSampler(body, domain, files, headers, req.getMethod(), name, path, port, protocol);
                 })
                 .collect(Collectors.toList());
 
         final TestPlan.ThreadGroup threadGroup = new TestPlan.ThreadGroup(httpSamplers, numThreads, rampTime);
 
         return new TestPlan(threadGroup);
+    }
+
+    private static List<TestPlan.Header> headers(Map<String, String> headerMap) {
+        return headerMap.entrySet().stream()
+                .map(entry -> new TestPlan.Header(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 }

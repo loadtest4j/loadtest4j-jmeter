@@ -1,87 +1,43 @@
 package org.loadtest4j.drivers.jmeter.plan;
 
-import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.loadtest4j.Body;
 import org.loadtest4j.BodyPart;
 import org.loadtest4j.drivers.jmeter.junit.UnitTest;
 
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 @Category(UnitTest.class)
-public class JMeterBodyVisitorTest {
+public class JMeterBodyVisitorTest extends BodyVisitorTest {
 
-    @Test
+    @Override
     public void testString() {
-        final JMeterBodyVisitor visitor = new JMeterBodyVisitor("", Collections.emptyMap(), "", "", "", 0, "");
+        final JMeterBodyVisitor visitor = new JMeterBodyVisitor();
 
-        final TestPlan.HttpSampler httpSampler = visitor.string("foo");
+        final String body = Body.string("foo").accept(visitor);
 
-        final TestPlan.Header header = httpSampler.headers.get(0);
-
-        assertSoftly(s -> {
-            s.assertThat(httpSampler.body).isEqualTo("foo");
-            s.assertThat(httpSampler.files).isEmpty();
-
-            s.assertThat(header.name).isEqualTo("Content-Type");
-            s.assertThat(header.value).isEqualTo("text/plain");
-        });
+        assertThat(body).isEqualTo("foo");
     }
 
-    @Test
-    public void testStringPartFails() {
-        final JMeterBodyVisitor visitor = new JMeterBodyVisitor("", Collections.emptyMap(), "", "", "", 0, "");
+    @Override
+    public void testStringPart() {
+        final JMeterBodyVisitor visitor = new JMeterBodyVisitor();
 
-        assertThatExceptionOfType(UnsupportedOperationException.class)
-                .isThrownBy(() -> visitor.parts(Collections.singletonList(BodyPart.string("foo", "bar"))))
-                .withMessage("This driver does not support string parts in multipart requests.");
+        final String body = Body.parts(BodyPart.string("foo", "bar")).accept(visitor);
+
+        assertThat(body).isNull();
     }
 
-    @Test
+    @Override
     public void testFilePart() {
-        final JMeterBodyVisitor visitor = new JMeterBodyVisitor("", Collections.emptyMap(), "", "", "", 0, "");
+        final JMeterBodyVisitor visitor = new JMeterBodyVisitor();
 
-        final TestPlan.HttpSampler httpSampler = visitor.parts(Collections.singletonList(BodyPart.file(Paths.get("src/test/resources/example/valid.txt"))));
+        final String body = Body.parts(BodyPart.file(Paths.get("src/test/resources/example/valid.txt"))).accept(visitor);
 
-        final TestPlan.File file = httpSampler.files.get(0);
-
-        assertSoftly(s -> {
-            s.assertThat(httpSampler.body).isNull();
-            s.assertThat(httpSampler.headers).isEmpty();
-
-            s.assertThat(file.name).isEqualTo("valid.txt");
-            s.assertThat(file.path).contains("valid.txt");
-            s.assertThat(file.mimetype).isEqualTo("text/plain");
-        });
+        assertThat(body).isNull();
     }
 
-    @Test
-    public void testFixHeaders() {
-        final Map<String, String> input = Collections.singletonMap("foo", "bar");
 
-        assertThat(JMeterBodyVisitor.fixHeaders(input))
-                .containsEntry("foo", "bar")
-                .containsEntry("Content-Type", "text/plain");
-    }
-
-    @Test
-    public void testFixHeadersPassthrough() {
-        final Map<String, String> input = Collections.singletonMap("Content-Type", "application/json");
-
-        assertThat(JMeterBodyVisitor.fixHeaders(input))
-                .isEqualTo(input);
-    }
-
-    @Test
-    public void testFixHeadersPassthroughCaseInsensitive() {
-        final Map<String, String> input = Collections.singletonMap("CoNtENt-TYPe", "application/json");
-
-        assertThat(JMeterBodyVisitor.fixHeaders(input))
-                .isEqualTo(input);
-    }
 }
