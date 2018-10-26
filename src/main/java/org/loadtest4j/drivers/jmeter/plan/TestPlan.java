@@ -25,6 +25,7 @@ class TestPlan {
     static class HttpSampler {
         final String body;
         final String domain;
+        final List<File> files;
         final List<Header> headers;
         final String method;
         final String name;
@@ -32,15 +33,28 @@ class TestPlan {
         final int port;
         final String protocol;
 
-        HttpSampler(String body, String domain, List<Header> headers, String method, String name, String path, int port, String protocol) {
+        HttpSampler(String body, String domain, List<File> files, List<Header> headers, String method, String name, String path, int port, String protocol) {
             this.body = body;
             this.domain = domain;
+            this.files = files;
             this.headers = headers;
             this.method = method;
             this.name = name;
             this.path = path;
             this.port = port;
             this.protocol = protocol;
+        }
+    }
+
+    static class File {
+        final String mimetype;
+        final String name;
+        final String path;
+
+        File(String mimetype, String name, String path) {
+            this.mimetype = mimetype;
+            this.name = name;
+            this.path = path;
         }
     }
 

@@ -28,6 +28,17 @@
       <hashTree>
         {{#httpSamplers}}
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="{{name}}" enabled="true">
+          <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
+            <collectionProp name="HTTPFileArgs.files">
+              {{#files}}
+              <elementProp name="{{path}}" elementType="HTTPFileArg">
+                <stringProp name="File.path">{{path}}</stringProp>
+                <stringProp name="File.paramname">{{name}}</stringProp>
+                <stringProp name="File.mimetype">{{mimetype}}</stringProp>
+              </elementProp>
+              {{/files}}
+            </collectionProp>
+          </elementProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
