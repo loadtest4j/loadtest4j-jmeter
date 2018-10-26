@@ -13,31 +13,31 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(UnitTest.class)
-public class JMeterHeadersVisitorTest extends BodyVisitorTest {
+public class JMeterHeadersMatcherTest extends BodyMatcherTest {
 
     @Override
     public void testString() {
-        final JMeterHeadersVisitor visitor = new JMeterHeadersVisitor(Collections.emptyMap());
+        final JMeterHeadersMatcher matcher = new JMeterHeadersMatcher(Collections.emptyMap());
 
-        final Map<String, String> headers = Body.string("foo").accept(visitor);
+        final Map<String, String> headers = Body.string("foo").match(matcher);
 
         assertThat(headers).containsEntry("Content-Type", "text/plain");
     }
 
     @Override
     public void testStringPart() {
-        final JMeterHeadersVisitor visitor = new JMeterHeadersVisitor(Collections.emptyMap());
+        final JMeterHeadersMatcher matcher = new JMeterHeadersMatcher(Collections.emptyMap());
 
-        final Map<String, String> headers = Body.parts(BodyPart.string("foo", "bar")).accept(visitor);
+        final Map<String, String> headers = Body.multipart(BodyPart.string("foo", "bar")).match(matcher);
 
         assertThat(headers).isEmpty();
     }
 
     @Override
     public void testFilePart() {
-        final JMeterHeadersVisitor visitor = new JMeterHeadersVisitor(Collections.emptyMap());
+        final JMeterHeadersMatcher matcher = new JMeterHeadersMatcher(Collections.emptyMap());
 
-        final Map<String, String> headers = Body.parts(BodyPart.file(Paths.get("src/test/resources/example/valid.txt"))).accept(visitor);
+        final Map<String, String> headers = Body.multipart(BodyPart.file(Paths.get("src/test/resources/example/valid.txt"))).match(matcher);
 
         assertThat(headers).isEmpty();
     }
@@ -46,7 +46,7 @@ public class JMeterHeadersVisitorTest extends BodyVisitorTest {
     public void testFixHeaders() {
         final Map<String, String> input = Collections.singletonMap("foo", "bar");
 
-        assertThat(JMeterHeadersVisitor.fixHeaders(input))
+        assertThat(JMeterHeadersMatcher.fixHeaders(input))
                 .containsEntry("foo", "bar")
                 .containsEntry("Content-Type", "text/plain");
     }
@@ -55,7 +55,7 @@ public class JMeterHeadersVisitorTest extends BodyVisitorTest {
     public void testFixHeadersPassthrough() {
         final Map<String, String> input = Collections.singletonMap("Content-Type", "application/json");
 
-        assertThat(JMeterHeadersVisitor.fixHeaders(input))
+        assertThat(JMeterHeadersMatcher.fixHeaders(input))
                 .isEqualTo(input);
     }
 
@@ -63,7 +63,7 @@ public class JMeterHeadersVisitorTest extends BodyVisitorTest {
     public void testFixHeadersPassthroughCaseInsensitive() {
         final Map<String, String> input = Collections.singletonMap("CoNtENt-TYPe", "application/json");
 
-        assertThat(JMeterHeadersVisitor.fixHeaders(input))
+        assertThat(JMeterHeadersMatcher.fixHeaders(input))
                 .isEqualTo(input);
     }
 }

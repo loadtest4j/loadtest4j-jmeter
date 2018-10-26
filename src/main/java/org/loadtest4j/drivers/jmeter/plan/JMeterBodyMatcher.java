@@ -5,7 +5,7 @@ import org.loadtest4j.BodyPart;
 
 import java.util.List;
 
-class JMeterBodyVisitor implements Body.Visitor<String> {
+class JMeterBodyMatcher implements Body.Matcher<String> {
 
     @Override
     public String string(String content) {
@@ -13,7 +13,7 @@ class JMeterBodyVisitor implements Body.Visitor<String> {
     }
 
     @Override
-    public String parts(List<BodyPart> body) {
+    public String multipart(List<BodyPart> body) {
         return null;
     }
 }

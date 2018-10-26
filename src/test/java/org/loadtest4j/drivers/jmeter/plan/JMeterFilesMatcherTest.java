@@ -13,31 +13,31 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 @Category(UnitTest.class)
-public class JMeterFilesVisitorTest extends BodyVisitorTest {
+public class JMeterFilesMatcherTest extends BodyMatcherTest {
 
     @Override
     public void testString() {
-        final JMeterFilesVisitor visitor = new JMeterFilesVisitor();
+        final JMeterFilesMatcher matcher = new JMeterFilesMatcher();
 
-        final List<TestPlan.File> files = Body.string("foo").accept(visitor);
+        final List<TestPlan.File> files = Body.string("foo").match(matcher);
 
         assertThat(files).isEmpty();
     }
 
     @Override
     public void testStringPart() {
-        final JMeterFilesVisitor visitor = new JMeterFilesVisitor();
+        final JMeterFilesMatcher matcher = new JMeterFilesMatcher();
 
         assertThatExceptionOfType(UnsupportedOperationException.class)
-                .isThrownBy(() -> Body.parts(BodyPart.string("foo", "bar")).accept(visitor))
+                .isThrownBy(() -> Body.multipart(BodyPart.string("foo", "bar")).match(matcher))
                 .withMessage("This driver does not support string parts in multipart requests.");
     }
 
     @Override
     public void testFilePart() {
-        final JMeterFilesVisitor visitor = new JMeterFilesVisitor();
+        final JMeterFilesMatcher matcher = new JMeterFilesMatcher();
 
-        final List<TestPlan.File> files = Body.parts(BodyPart.file(Paths.get("src/test/resources/example/valid.txt"))).accept(visitor);
+        final List<TestPlan.File> files = Body.multipart(BodyPart.file(Paths.get("src/test/resources/example/valid.txt"))).match(matcher);
 
         final TestPlan.File file = files.get(0);
 

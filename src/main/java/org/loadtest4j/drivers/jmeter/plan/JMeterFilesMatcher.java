@@ -10,20 +10,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class JMeterFilesVisitor implements Body.Visitor<List<TestPlan.File>> {
+public class JMeterFilesMatcher implements Body.Matcher<List<TestPlan.File>> {
     @Override
     public List<TestPlan.File> string(String body) {
         return Collections.emptyList();
     }
 
     @Override
-    public List<TestPlan.File> parts(List<BodyPart> body) {
+    public List<TestPlan.File> multipart(List<BodyPart> body) {
         return body.stream()
-                .map(part -> part.accept(new JMeterBodyPartVisitor()))
+                .map(part -> part.match(new JMeterBodyPartMatcher()))
                 .collect(Collectors.toList());
     }
 
-    private static class JMeterBodyPartVisitor implements BodyPart.Visitor<TestPlan.File> {
+    private static class JMeterBodyPartMatcher implements BodyPart.Matcher<TestPlan.File> {
         @Override
         public TestPlan.File stringPart(String name, String content) {
             throw new UnsupportedOperationException("This driver does not support string parts in multipart requests.");

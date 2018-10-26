@@ -61,9 +61,9 @@ public class BlackBoxTestPlanFactory implements TestPlanFactory {
                     final String name = req.getMethod() + " " + req.getPath();
                     final String path = req.getPath() + QueryString.fromMap(req.getQueryParams());
 
-                    final List<TestPlan.Header> headers = headers(req.getBody().accept(new JMeterHeadersVisitor(req.getHeaders())));
-                    final String body = req.getBody().accept(new JMeterBodyVisitor());
-                    final List<TestPlan.File> files = req.getBody().accept(new JMeterFilesVisitor());
+                    final List<TestPlan.Header> headers = headers(req.getBody().match(new JMeterHeadersMatcher(req.getHeaders())));
+                    final String body = req.getBody().match(new JMeterBodyMatcher());
+                    final List<TestPlan.File> files = req.getBody().match(new JMeterFilesMatcher());
                     return new TestPlan.HttpSampler(body, domain, files, headers, req.getMethod(), name, path, port, protocol);
                 })
                 .collect(Collectors.toList());

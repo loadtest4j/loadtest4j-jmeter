@@ -9,11 +9,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class JMeterHeadersVisitor implements Body.Visitor<Map<String, String>> {
+public class JMeterHeadersMatcher implements Body.Matcher<Map<String, String>> {
 
     private final Map<String, String> headers;
 
-    JMeterHeadersVisitor(Map<String, String> headers) {
+    JMeterHeadersMatcher(Map<String, String> headers) {
         this.headers = headers;
     }
 
@@ -23,7 +23,7 @@ public class JMeterHeadersVisitor implements Body.Visitor<Map<String, String>> {
     }
 
     @Override
-    public Map<String, String> parts(List<BodyPart> body) {
+    public Map<String, String> multipart(List<BodyPart> body) {
         return this.headers;
     }
 

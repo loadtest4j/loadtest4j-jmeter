@@ -10,31 +10,31 @@ import java.nio.file.Paths;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(UnitTest.class)
-public class JMeterBodyVisitorTest extends BodyVisitorTest {
+public class JMeterBodyMatcherTest extends BodyMatcherTest {
 
     @Override
     public void testString() {
-        final JMeterBodyVisitor visitor = new JMeterBodyVisitor();
+        final JMeterBodyMatcher matcher = new JMeterBodyMatcher();
 
-        final String body = Body.string("foo").accept(visitor);
+        final String body = Body.string("foo").match(matcher);
 
         assertThat(body).isEqualTo("foo");
     }
 
     @Override
     public void testStringPart() {
-        final JMeterBodyVisitor visitor = new JMeterBodyVisitor();
+        final JMeterBodyMatcher matcher = new JMeterBodyMatcher();
 
-        final String body = Body.parts(BodyPart.string("foo", "bar")).accept(visitor);
+        final String body = Body.multipart(BodyPart.string("foo", "bar")).match(matcher);
 
         assertThat(body).isNull();
     }
 
     @Override
     public void testFilePart() {
-        final JMeterBodyVisitor visitor = new JMeterBodyVisitor();
+        final JMeterBodyMatcher matcher = new JMeterBodyMatcher();
 
-        final String body = Body.parts(BodyPart.file(Paths.get("src/test/resources/example/valid.txt"))).accept(visitor);
+        final String body = Body.multipart(BodyPart.file(Paths.get("src/test/resources/example/valid.txt"))).match(matcher);
 
         assertThat(body).isNull();
     }
