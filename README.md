@@ -22,25 +22,17 @@ Add the library to your Maven project POM:
 
 ### 2. Create the load tester
 
-Construct the `LoadTester` with **either** the Factory **or** the Builder.
+Use **either** the Factory **or** the Builder.
 
 #### Factory
 
 ```java
-public class PetStoreLT {
-
-    private static final LoadTester loadTester = LoadTesterFactory.getLoadTester();
-
-    @Test
-    public void shouldFindPets() {
-        // ...
-    }
-}
+LoadTester loadTester = LoadTesterFactory.getLoadTester();
 ```
 
-Configure the driver in `src/test/resources/loadtest4j.properties`:
-
 ```properties
+# src/test/resources/loadtest4j.properties
+
 loadtest4j.driver.domain = example.com
 loadtest4j.driver.numThreads = 1
 loadtest4j.driver.port = 443
@@ -51,23 +43,34 @@ loadtest4j.driver.rampUp = 5
 #### Builder
 
 ```java
-public class PetStoreLT {
-    
-    private static final LoadTester loadTester = JMeterBuilder.withUrl("https", "example.com", 443)
-                                                              .withNumThreads(1)
-                                                              .withRampUp(5)
-                                                              .build();
-    
-    @Test
-    public void shouldFindPets() {
-        // ...
-    }
-}
+LoadTester loadTester = JMeterBuilder.withUrl("https", "example.com", 443)
+                                     .withNumThreads(1)
+                                     .withRampUp(5)
+                                     .build();
 ``` 
 
 ### 3. **Write load tests** 
 
-Use the standard [LoadTester API](https://github.com/loadtest4j/loadtest4j) to write load tests.
+Use the [LoadTester API](https://github.com/loadtest4j/loadtest4j) to write load tests:
+
+```java
+public class PetStoreLT {
+
+    private static final LoadTester loadTester = /* see Step 2 */ ;
+
+    @Test
+    public void shouldFindPets() {
+        List<Request> requests = List.of(Request.get("/pet/findByStatus")
+                                                .withHeader("Accept", "application/json")
+                                                .withQueryParam("status", "available"));
+
+        Result result = loadTester.run(requests);
+
+        assertThat(result.getResponseTime().getPercentile(90))
+            .isLessThanOrEqualTo(Duration.ofMillis(500));
+    }
+}
+```
 
 ## Generate HTML reports
 
