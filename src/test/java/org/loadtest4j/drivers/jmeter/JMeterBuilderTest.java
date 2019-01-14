@@ -10,38 +10,69 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(UnitTest.class)
 public class JMeterBuilderTest {
 
-    @Test
-    public void shouldHaveDefaultValues() {
-        final JMeter jmeter = (JMeter) JMeterBuilder.withUrl("https", "example.com", 443).build();
+    private final JMeterBuilder builder = JMeterBuilder.withUrl("https", "example.com", 443);
 
-        assertThat(jmeter.domain).isEqualTo("example.com");
-        assertThat(jmeter.numThreads).isEqualTo(1);
-        assertThat(jmeter.port).isEqualTo(443);
+    @Test
+    public void shouldRequireProtocol() {
+        final JMeter jmeter = (JMeter) builder.buildDriver();
+
         assertThat(jmeter.protocol).isEqualTo("https");
-        assertThat(jmeter.rampUp).isEqualTo(1);
     }
 
     @Test
-    public void shouldSetCustomValues() {
-        final JMeter jmeter = (JMeter) JMeterBuilder.withUrl("https", "example.com", 443)
+    public void shouldRequireDomain() {
+        final JMeter jmeter = (JMeter) builder.buildDriver();
+
+        assertThat(jmeter.domain).isEqualTo("example.com");
+    }
+
+    @Test
+    public void shouldRequirePort() {
+        final JMeter jmeter = (JMeter) builder.buildDriver();
+
+        assertThat(jmeter.port).isEqualTo(443);
+    }
+
+    @Test
+    public void shouldSetNumThreads() {
+        final JMeter jmeter = (JMeter) builder
                 .withNumThreads(2)
-                .withRampUp(2)
-                .build();
+                .buildDriver();
 
         assertThat(jmeter.numThreads).isEqualTo(2);
+    }
+
+    @Test
+    public void shouldSetNumThreadsTo1ByDefault() {
+        final JMeter jmeter = (JMeter) builder.buildDriver();
+
+        assertThat(jmeter.numThreads).isEqualTo(1);
+    }
+
+    @Test
+    public void shouldSetRampUp() {
+        final JMeter jmeter = (JMeter) builder
+                .withRampUp(2)
+                .buildDriver();
+
         assertThat(jmeter.rampUp).isEqualTo(2);
     }
 
     @Test
-    public void shouldBeImmutable() {
-        final JMeterBuilder builder = JMeterBuilder.withUrl("https", "example.com", 443);
+    public void shouldSetRampUpTo1SecondByDefault() {
+        final JMeter jmeter = (JMeter) builder.buildDriver();
 
-        final Driver before = builder.build();
+        assertThat(jmeter.rampUp).isEqualTo(1);
+    }
+
+    @Test
+    public void shouldBeImmutable() {
+        final Driver before = builder.buildDriver();
 
         builder.withNumThreads(2);
         builder.withRampUp(2);
 
-        final Driver after = builder.build();
+        final Driver after = builder.buildDriver();
 
         assertThat(after).isEqualToComparingFieldByField(before);
     }

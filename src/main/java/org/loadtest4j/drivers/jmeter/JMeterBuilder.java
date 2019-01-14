@@ -34,7 +34,7 @@ public class JMeterBuilder {
         return new JMeterBuilder(domain, numThreads, port, protocol, rampUp);
     }
 
-    public Driver build() {
+    protected Driver buildDriver() {
         return new JMeter(domain, numThreads, port, protocol, rampUp);
     }
 }
