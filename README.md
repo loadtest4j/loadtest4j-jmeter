@@ -8,27 +8,72 @@ Apache JMeter driver for loadtest4j.
 
 ## Setup
 
-1. **Add the library** to your `pom.xml`:
+### 1. Add the library
 
-    ```xml
-    <dependency>
-        <groupId>org.loadtest4j.drivers</groupId>
-        <artifactId>loadtest4j-jmeter</artifactId>
-        <scope>test</scope>
-    </dependency>
-    ```
+Add the library to your Maven project POM:
 
-2. **Configure the driver** in `src/test/resources/loadtest4j.properties`:
+```xml
+<dependency>
+    <groupId>org.loadtest4j.drivers</groupId>
+    <artifactId>loadtest4j-jmeter</artifactId>
+    <scope>test</scope>
+</dependency>
+```
+
+### 2. Create the load tester
+
+Use either the Factory or Builder method.
+
+#### Factory
+
+Use the `LoadTesterFactory` to construct the driver with runtime configuration lookup:
+
+```java
+public class PetStoreLT {
+
+    private static final LoadTester loadTester = LoadTesterFactory.getLoadTester();
+
+    @Test
+    public void shouldFindPets() {
+        // ...
+    }
+}
+```
+
+Place configuration in `src/test/resources/loadtest4j.properties`:
+
+```properties
+loadtest4j.driver.domain = example.com
+loadtest4j.driver.numThreads = 1
+loadtest4j.driver.port = 443
+loadtest4j.driver.protocol = https
+loadtest4j.driver.rampUp = 5
+```
+
+Environment-specific configuration can also be injected as JVM system properties, or Maven POM properties.
+
+#### Builder
+
+Use the `JMeterBuilder` to construct the driver with code (no separate configuration required):
+
+```java
+public class PetStoreLT {
     
-    ```properties
-    loadtest4j.driver.domain = example.com
-    loadtest4j.driver.numThreads = 1
-    loadtest4j.driver.port = 443
-    loadtest4j.driver.protocol = https
-    loadtest4j.driver.rampUp = 5
-    ```
+    private static final LoadTester loadTester = JMeterBuilder.withUrl("https", "example.com", 443)
+                                                              .withNumThreads(1)
+                                                              .withRampUp(5)
+                                                              .build();
+    
+    @Test
+    public void shouldFindPets() {
+        // ...
+    }
+}
+``` 
 
-3. **Write your load tests** using the standard [LoadTester API](https://github.com/loadtest4j/loadtest4j).
+### 3. **Write load tests** 
+
+Use the standard [LoadTester API](https://github.com/loadtest4j/loadtest4j) to write load tests.
 
 ## Generate HTML reports
 
