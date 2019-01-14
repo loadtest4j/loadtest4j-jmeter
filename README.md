@@ -22,11 +22,9 @@ Add the library to your Maven project POM:
 
 ### 2. Create the load tester
 
-Use either the Factory or Builder method.
+Construct the `LoadTester` with **either** the Factory **or** the Builder.
 
 #### Factory
-
-Use the `LoadTesterFactory` to construct the driver with runtime configuration lookup:
 
 ```java
 public class PetStoreLT {
@@ -40,7 +38,7 @@ public class PetStoreLT {
 }
 ```
 
-Place configuration in `src/test/resources/loadtest4j.properties`:
+Place configuration in `src/test/resources/loadtest4j.properties`. (Environment-specific configuration can be injected via [Maven resource filtering](https://maven.apache.org/plugins/maven-resources-plugin/examples/filter.html).)
 
 ```properties
 loadtest4j.driver.domain = example.com
@@ -50,11 +48,7 @@ loadtest4j.driver.protocol = https
 loadtest4j.driver.rampUp = 5
 ```
 
-Environment-specific configuration can also be injected as JVM system properties, or Maven POM properties.
-
 #### Builder
-
-Use the `JMeterBuilder` to construct the driver with code (no separate configuration required):
 
 ```java
 public class PetStoreLT {
