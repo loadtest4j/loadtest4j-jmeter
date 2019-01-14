@@ -4,7 +4,7 @@
 [![Codecov](https://codecov.io/gh/loadtest4j/loadtest4j-jmeter/branch/master/graph/badge.svg)](https://codecov.io/gh/loadtest4j/loadtest4j-jmeter)
 [![Maven Central](https://img.shields.io/maven-central/v/org.loadtest4j.drivers/loadtest4j-jmeter.svg)](https://repo1.maven.org/maven2/org/loadtest4j/drivers/loadtest4j-jmeter/)
 
-Apache JMeter driver for loadtest4j.
+Apache JMeter driver for [loadtest4j](https://github.com/loadtest4j/loadtest4j).
 
 ## Setup
 
@@ -38,7 +38,7 @@ public class PetStoreLT {
 }
 ```
 
-Place configuration in `src/test/resources/loadtest4j.properties`. (Environment-specific configuration can be injected via [Maven resource filtering](https://maven.apache.org/plugins/maven-resources-plugin/examples/filter.html).)
+Configure the driver in `src/test/resources/loadtest4j.properties`:
 
 ```properties
 loadtest4j.driver.domain = example.com
@@ -71,7 +71,7 @@ Use the standard [LoadTester API](https://github.com/loadtest4j/loadtest4j) to w
 
 ## Generate HTML reports
 
-The driver instructs JMeter to write its JTL report file to `results/loadtest4j-[timestamp]/result.jtl`.
+The driver instructs JMeter to write its JTL report file to `./results/loadtest4j-[timestamp]/result.jtl`.
 
 A standalone copy of JMeter can generate an HTML report from this file with the following command:
 
