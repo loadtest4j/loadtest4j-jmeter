@@ -1,8 +1,8 @@
 package org.loadtest4j.drivers.jmeter;
 
-import org.loadtest4j.driver.Driver;
+import org.loadtest4j.factory.LoadTesterBuilder;
 
-public class JMeterBuilder {
+public class JMeterBuilder extends LoadTesterBuilder {
 
     private final String domain;
 
@@ -34,7 +34,8 @@ public class JMeterBuilder {
         return new JMeterBuilder(domain, numThreads, port, protocol, rampUp);
     }
 
-    protected Driver buildDriver() {
+    @Override
+    protected JMeter buildDriver() {
         return new JMeter(domain, numThreads, port, protocol, rampUp);
     }
 }

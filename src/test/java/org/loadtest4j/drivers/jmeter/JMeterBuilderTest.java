@@ -14,28 +14,28 @@ public class JMeterBuilderTest {
 
     @Test
     public void shouldRequireProtocol() {
-        final JMeter jmeter = (JMeter) builder.buildDriver();
+        final JMeter jmeter = builder.buildDriver();
 
         assertThat(jmeter.protocol).isEqualTo("https");
     }
 
     @Test
     public void shouldRequireDomain() {
-        final JMeter jmeter = (JMeter) builder.buildDriver();
+        final JMeter jmeter = builder.buildDriver();
 
         assertThat(jmeter.domain).isEqualTo("example.com");
     }
 
     @Test
     public void shouldRequirePort() {
-        final JMeter jmeter = (JMeter) builder.buildDriver();
+        final JMeter jmeter = builder.buildDriver();
 
         assertThat(jmeter.port).isEqualTo(443);
     }
 
     @Test
     public void shouldSetNumThreads() {
-        final JMeter jmeter = (JMeter) builder
+        final JMeter jmeter = builder
                 .withNumThreads(2)
                 .buildDriver();
 
@@ -44,14 +44,14 @@ public class JMeterBuilderTest {
 
     @Test
     public void shouldSetNumThreadsTo1ByDefault() {
-        final JMeter jmeter = (JMeter) builder.buildDriver();
+        final JMeter jmeter = builder.buildDriver();
 
         assertThat(jmeter.numThreads).isEqualTo(1);
     }
 
     @Test
     public void shouldSetRampUp() {
-        final JMeter jmeter = (JMeter) builder
+        final JMeter jmeter = builder
                 .withRampUp(2)
                 .buildDriver();
 
@@ -60,7 +60,7 @@ public class JMeterBuilderTest {
 
     @Test
     public void shouldSetRampUpTo1SecondByDefault() {
-        final JMeter jmeter = (JMeter) builder.buildDriver();
+        final JMeter jmeter = builder.buildDriver();
 
         assertThat(jmeter.rampUp).isEqualTo(1);
     }
