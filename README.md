@@ -6,11 +6,13 @@
 
 Apache JMeter driver for [loadtest4j](https://github.com/loadtest4j/loadtest4j).
 
-## Setup
+## Usage
+
+With a new or existing Maven project open in your favorite editor...
 
 ### 1. Add the library
 
-Add the library to your Maven project POM:
+Add the library to your Maven project POM.
 
 ```xml
 <dependency>
@@ -47,16 +49,16 @@ LoadTester loadTester = JMeterBuilder.withUrl("https", "example.com", 443)
                                      .withNumThreads(1)
                                      .withRampUp(5)
                                      .build();
-``` 
+```
 
-### 3. **Write load tests** 
+### 3. Write load tests
 
-Use the [LoadTester API](https://github.com/loadtest4j/loadtest4j) to write load tests:
+Write load tests with your favorite language, test framework, and assertions. See the [loadtest4j README](https://github.com/loadtest4j/loadtest4j) for further instructions.
 
 ```java
 public class PetStoreLT {
 
-    private static final LoadTester loadTester = /* see Step 2 */ ;
+    private static final LoadTester loadTester = /* see step 2 */ ;
 
     @Test
     public void shouldFindPets() {
