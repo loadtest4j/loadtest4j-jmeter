@@ -4,7 +4,7 @@
 [![Codecov](https://codecov.io/gh/loadtest4j/loadtest4j-jmeter/branch/master/graph/badge.svg)](https://codecov.io/gh/loadtest4j/loadtest4j-jmeter)
 [![Maven Central](https://img.shields.io/maven-central/v/org.loadtest4j.drivers/loadtest4j-jmeter.svg)](https://repo1.maven.org/maven2/org/loadtest4j/drivers/loadtest4j-jmeter/)
 
-Apache JMeter driver for [loadtest4j](https://github.com/loadtest4j/loadtest4j).
+Apache JMeter driver for [loadtest4j](https://www.loadtest4j.org).
 
 ## Usage
 
@@ -53,7 +53,7 @@ LoadTester loadTester = JMeterBuilder.withUrl("https", "example.com", 443)
 
 ### 3. Write load tests
 
-Write load tests with your favorite language, test framework, and assertions. See the [loadtest4j README](https://github.com/loadtest4j/loadtest4j) for further instructions.
+Write load tests with your favorite language, test framework, and assertions. See the [loadtest4j documentation](https://www.loadtest4j.org) for further instructions.
 
 ```java
 public class PetStoreLT {
