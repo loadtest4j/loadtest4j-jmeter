@@ -19,15 +19,15 @@ import java.util.List;
 
 class JMeter implements Driver {
 
-    private final String domain;
+    final String domain;
 
-    private final int numThreads;
+    final int numThreads;
 
-    private final int port;
+    final int port;
 
-    private final String protocol;
+    final String protocol;
 
-    private final int rampUp;
+    final int rampUp;
 
     JMeter(String domain, int numThreads, int port, String protocol, int rampUp) {
         this.domain = domain;
